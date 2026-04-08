@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>F Chord Coach — Sprint Plan W1–W8</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap');
+
+:root {
+  --bg:        #0c0c0c;
+  --bg2:       #141414;
+  --bg3:       #1c1c1c;
+  --bg4:       #242424;
+  --border:    rgba(255,255,255,0.07);
+  --border2:   rgba(255,255,255,0.12);
+  --text:      #e6e4de;
+  --muted:     #555;
+  --muted2:    #888;
+  --dev:       #1D9E75;
+  --dev-bg:    rgba(29,158,117,0.10);
+  --dev-border:rgba(29,158,117,0.25);
+  --fe:        #8B82E8;
+  --fe-bg:     rgba(139,130,232,0.10);
+  --fe-border: rgba(139,130,232,0.25);
+  --sync:      #C88B20;
+  --sync-bg:   rgba(200,139,32,0.10);
+  --sync-border:rgba(200,139,32,0.25);
+  --danger:    #E24B4A;
+  --mono: 'IBM Plex Mono', monospace;
+  --sans: 'IBM Plex Sans', sans-serif;
+  --rad: 8px;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:var(--sans);font-size:14px;line-height:1.65;padding:3rem 2.5rem 5rem;max-width:1020px;margin:0 auto}
+.sec-label{font-family:var(--mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin:3.5rem 0 1.25rem;padding-bottom:.6rem;border-bottom:1px solid var(--border)}
+.header{padding:2.5rem 0;margin-bottom:.5rem;border-bottom:1px solid var(--border)}
+.eyebrow{font-family:var(--mono);font-size:11px;color:var(--dev);letter-spacing:.1em;text-transform:uppercase;margin-bottom:.75rem}
+h1{font-size:2.1rem;font-weight:300;letter-spacing:-.035em;margin-bottom:.5rem;line-height:1.2}
+h1 strong{font-weight:600}
+.header-desc{color:var(--muted2);font-size:13.5px;margin-top:.4rem}
+.header-pills{display:flex;gap:8px;flex-wrap:wrap;margin-top:1.25rem}
+.pill{font-family:var(--mono);font-size:11px;padding:4px 12px;border-radius:100px;border:1px solid var(--border2);color:var(--muted2);background:var(--bg2)}
+.legend{display:flex;gap:1.5rem;flex-wrap:wrap;margin-bottom:2rem}
+.legend-item{display:flex;align-items:center;gap:7px;font-size:12.5px;color:var(--muted2)}
+.leg-dot{width:9px;height:9px;border-radius:3px;flex-shrink:0}
+.arch-wrap{background:var(--bg2);border:1px solid var(--border);border-radius:var(--rad);padding:1.5rem;overflow-x:auto;margin-bottom:.5rem}
+.arch-wrap svg{display:block}
+.stack-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.stack-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--rad);overflow:hidden}
+.stack-head{padding:.7rem 1rem;font-family:var(--mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:8px}
+.stack-dot{width:7px;height:7px;border-radius:2px;flex-shrink:0}
+.stack-row{display:flex;justify-content:space-between;align-items:center;padding:8px 1rem;border-bottom:1px solid var(--border);font-size:12.5px}
+.stack-row:last-child{border-bottom:none}
+.stack-name{color:var(--muted2)}
+.stack-pkg{font-family:var(--mono);font-size:11px;color:var(--text)}
+.week-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--rad);overflow:hidden;margin-bottom:12px}
+.week-head{display:flex;align-items:center;gap:12px;padding:.85rem 1.25rem;background:var(--bg3);border-bottom:1px solid var(--border);flex-wrap:wrap}
+.week-num{font-family:var(--mono);font-size:11px;color:var(--muted);min-width:52px;flex-shrink:0}
+.week-title{font-size:14.5px;font-weight:500;flex:1;min-width:200px}
+.ms-badge{font-family:var(--mono);font-size:10px;padding:3px 10px;border-radius:4px;border:1px solid;white-space:nowrap}
+.ms-dev{color:var(--dev);border-color:var(--dev-border);background:var(--dev-bg)}
+.ms-fe{color:var(--fe);border-color:var(--fe-border);background:var(--fe-bg)}
+.ms-shared{color:var(--sync);border-color:var(--sync-border);background:var(--sync-bg)}
+.week-cols{display:grid;grid-template-columns:1fr 1fr}
+.week-col{padding:1.1rem 1.25rem}
+.week-col:first-child{border-right:1px solid var(--border)}
+.team-label{font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;margin-bottom:.85rem;display:flex;align-items:center;gap:7px}
+.tl-dot{width:7px;height:7px;border-radius:2px;flex-shrink:0}
+.tasks{list-style:none}
+.tasks li{font-size:12.5px;color:#a0a0a0;padding:4px 0 4px 1rem;position:relative;line-height:1.55;border-bottom:1px solid rgba(255,255,255,.03)}
+.tasks li:last-child{border-bottom:none}
+.tasks li::before{content:"–";position:absolute;left:0;color:var(--muted)}
+.tasks li strong{color:var(--text);font-weight:500}
+.tasks code{font-family:var(--mono);font-size:10.5px;background:var(--bg4);border:1px solid var(--border);padding:1px 5px;border-radius:3px;color:#ccc}
+.sync-bar{background:var(--sync-bg);border-top:1px solid var(--sync-border);padding:.75rem 1.25rem;display:flex;gap:.85rem;align-items:flex-start}
+.sync-tag{font-family:var(--mono);font-size:10px;color:var(--sync);text-transform:uppercase;letter-spacing:.08em;min-width:80px;padding-top:1px;flex-shrink:0}
+.sync-text{font-size:12px;color:#999;line-height:1.6}
+.sync-text strong{color:var(--sync);font-weight:500}
+.ctable{width:100%;border-collapse:collapse;font-size:12.5px;background:var(--bg2);border:1px solid var(--border);border-radius:var(--rad);overflow:hidden}
+.ctable th{font-family:var(--mono);font-size:10px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);text-align:left;padding:.6rem 1rem;background:var(--bg3);border-bottom:1px solid var(--border2)}
+.ctable td{padding:.65rem 1rem;border-bottom:1px solid var(--border);color:#a0a0a0;vertical-align:top;line-height:1.5}
+.ctable tr:last-child td{border-bottom:none}
+.ctable tr:hover td{background:var(--bg3)}
+.ctable code{font-family:var(--mono);font-size:11px;background:var(--bg4);border:1px solid var(--border);padding:1px 5px;border-radius:3px;color:#ddd}
+.owner-dev{font-family:var(--mono);font-size:11px;color:var(--dev)}
+.owner-fe{font-family:var(--mono);font-size:11px;color:var(--fe)}
+.owner-shared{font-family:var(--mono);font-size:11px;color:var(--sync)}
+.dec-list{display:flex;flex-direction:column;gap:8px}
+.dec-item{background:var(--bg2);border:1px solid var(--border);border-radius:var(--rad);padding:1rem 1.25rem;display:flex;gap:1rem;align-items:flex-start}
+.dec-id{font-family:var(--mono);font-size:10px;color:var(--muted);min-width:34px;padding-top:3px}
+.dec-body{flex:1}
+.dec-q{font-size:13.5px;font-weight:500;margin-bottom:4px}
+.dec-note{font-size:12px;color:#777;line-height:1.6}
+.dec-badge{font-family:var(--mono);font-size:10px;padding:3px 9px;border-radius:4px;border:1px solid;align-self:flex-start;white-space:nowrap;flex-shrink:0}
+.metrics-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.met-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--rad);padding:1rem 1.1rem}
+.met-label{font-family:var(--mono);font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.07em;margin-bottom:6px}
+.met-val{font-size:24px;font-weight:300;margin-bottom:3px}
+.met-desc{font-size:11.5px;color:#666}
+.rtable{width:100%;border-collapse:collapse;font-size:12.5px;background:var(--bg2);border:1px solid var(--border);border-radius:var(--rad);overflow:hidden}
+.rtable th{font-family:var(--mono);font-size:10px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);text-align:left;padding:.6rem 1rem;background:var(--bg3);border-bottom:1px solid var(--border2)}
+.rtable td{padding:.65rem 1rem;border-bottom:1px solid var(--border);color:#a0a0a0;vertical-align:top;line-height:1.55}
+.rtable tr:last-child td{border-bottom:none}
+.risk-h{color:var(--danger);font-family:var(--mono);font-size:11px}
+.risk-m{color:var(--sync);font-family:var(--mono);font-size:11px}
+.risk-l{color:var(--dev);font-family:var(--mono);font-size:11px}
+.footer{margin-top:4rem;padding-top:1.25rem;border-top:1px solid var(--border);font-family:var(--mono);font-size:11px;color:var(--muted);display:flex;justify-content:space-between;flex-wrap:wrap;gap:6px}
+@media(max-width:680px){body{padding:2rem 1.25rem 4rem}h1{font-size:1.6rem}.week-cols{grid-template-columns:1fr}.week-col:first-child{border-right:none;border-bottom:1px solid var(--border)}.metrics-grid{grid-template-columns:1fr 1fr}.stack-grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="header">
+  <div class="eyebrow">F Chord Coach · MVP</div>
+  <h1>Week 1–8 <strong>Sprint Roadmap</strong></h1>
+  <p class="header-desc">MediaPipe + GNN + VLM pipeline — Dev Team × Frontend Team 協作計畫</p>
+  <div class="header-pills">
+    <span class="pill">2 teams</span><span class="pill">8 weeks</span><span class="pill">iOS / Android</span><span class="pill">F chord only MVP</span><span class="pill">~900 training samples</span>
+  </div>
+</div>
+
+<!-- LEGEND -->
+<div class="sec-label">凡例</div>
+<div class="legend">
+  <div class="legend-item"><div class="leg-dot" style="background:var(--dev)"></div><span style="color:var(--dev)">Dev Team</span> — ML / CV / Backend</div>
+  <div class="legend-item"><div class="leg-dot" style="background:var(--fe)"></div><span style="color:var(--fe)">Frontend Team</span> — Flutter / UI/UX</div>
+  <div class="legend-item"><div class="leg-dot" style="background:var(--sync)"></div><span style="color:var(--sync)">Sync Point</span> — 雙隊確認事項</div>
+  <div class="legend-item"><div class="leg-dot" style="background:#444;border:1px solid #666"></div>第三方 API</div>
+</div>
+
+<!-- ARCHITECTURE -->
+<div class="sec-label">整體系統架構</div>
+<div class="arch-wrap">
+<svg viewBox="0 0 940 530" width="100%" xmlns="http://www.w3.org/2000/svg" style="font-family:'IBM Plex Sans',sans-serif;max-width:940px">
+<defs>
+  <marker id="a0" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M2 1L8 5L2 9" fill="none" stroke="#444" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></marker>
+  <marker id="a1" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M2 1L8 5L2 9" fill="none" stroke="#1D9E75" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></marker>
+  <marker id="a2" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M2 1L8 5L2 9" fill="none" stroke="#8B82E8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></marker>
+  <marker id="a3" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M2 1L8 5L2 9" fill="none" stroke="#C88B20" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></marker>
+</defs>
+
+<!-- ── Frontend container ── -->
+<rect x="12" y="12" width="916" height="116" rx="10" fill="rgba(139,130,232,0.055)" stroke="rgba(139,130,232,0.22)" stroke-width="1"/>
+<text x="26" y="32" font-size="9.5" fill="#8B82E8" font-family="'IBM Plex Mono',monospace" letter-spacing="1.5" font-weight="500">FRONTEND TEAM — Flutter / CustomPainter</text>
+
+<!-- FE: Camera Feed -->
+<rect x="30" y="44" width="148" height="64" rx="7" fill="rgba(139,130,232,0.12)" stroke="rgba(139,130,232,0.32)" stroke-width="1"/>
+<text x="104" y="72" font-size="12.5" fill="#c8c4f2" text-anchor="middle" font-weight="500">Camera Feed</text>
+<text x="104" y="90" font-size="10" fill="#8B82E8" text-anchor="middle">手機鏡頭輸入</text>
+
+<!-- FE: AR Canvas -->
+<rect x="222" y="44" width="148" height="64" rx="7" fill="rgba(139,130,232,0.12)" stroke="rgba(139,130,232,0.32)" stroke-width="1"/>
+<text x="296" y="72" font-size="12.5" fill="#c8c4f2" text-anchor="middle" font-weight="500">AR Canvas</text>
+<text x="296" y="90" font-size="10" fill="#8B82E8" text-anchor="middle">Skeleton + ghost overlay</text>
+
+<!-- FE: Feedback Panel -->
+<rect x="414" y="44" width="148" height="64" rx="7" fill="rgba(139,130,232,0.12)" stroke="rgba(139,130,232,0.32)" stroke-width="1"/>
+<text x="488" y="72" font-size="12.5" fill="#c8c4f2" text-anchor="middle" font-weight="500">Feedback Panel</text>
+<text x="488" y="90" font-size="10" fill="#8B82E8" text-anchor="middle">建議卡片 / 計時器</text>
+
+<!-- FE: Progress Screen -->
+<rect x="606" y="44" width="148" height="64" rx="7" fill="rgba(139,130,232,0.12)" stroke="rgba(139,130,232,0.32)" stroke-width="1"/>
+<text x="680" y="72" font-size="12.5" fill="#c8c4f2" text-anchor="middle" font-weight="500">Progress Screen</text>
+<text x="680" y="90" font-size="10" fill="#8B82E8" text-anchor="middle">練習歷史 / 統計</text>
+
+<!-- FE: Local DB -->
+<rect x="798" y="44" width="116" height="64" rx="7" fill="rgba(139,130,232,0.07)" stroke="rgba(139,130,232,0.18)" stroke-width="1" stroke-dasharray="4 3"/>
+<text x="856" y="72" font-size="12" fill="#8B82E8" text-anchor="middle" font-weight="500">Local DB</text>
+<text x="856" y="90" font-size="10" fill="#555" text-anchor="middle">SQLite / session</text>
+
+<!-- FE arrows horizontal -->
+<line x1="178" y1="76" x2="220" y2="76" stroke="#8B82E8" stroke-width="1.5" marker-end="url(#a2)"/>
+<line x1="370" y1="76" x2="412" y2="76" stroke="#8B82E8" stroke-width="1.5" marker-end="url(#a2)"/>
+<line x1="562" y1="76" x2="604" y2="76" stroke="#8B82E8" stroke-width="1.5" marker-end="url(#a2)"/>
+<line x1="754" y1="76" x2="796" y2="76" stroke="#8B82E8" stroke-width=".8" stroke-dasharray="4 3" marker-end="url(#a2)"/>
+
+<!-- ── Dev container ── -->
+<rect x="12" y="150" width="620" height="366" rx="10" fill="rgba(29,158,117,0.045)" stroke="rgba(29,158,117,0.18)" stroke-width="1"/>
+<text x="26" y="170" font-size="9.5" fill="#1D9E75" font-family="'IBM Plex Mono',monospace" letter-spacing="1.5" font-weight="500">DEV TEAM — On-device inference pipeline</text>
+
+<!-- Dev: MediaPipe -->
+<rect x="30" y="182" width="170" height="64" rx="7" fill="rgba(29,158,117,0.13)" stroke="rgba(29,158,117,0.36)" stroke-width="1"/>
+<text x="115" y="210" font-size="12.5" fill="#8de0c0" text-anchor="middle" font-weight="500">MediaPipe Hands</text>
+<text x="115" y="228" font-size="10" fill="#1D9E75" text-anchor="middle">21 keypoints [x, y, z]</text>
+
+<!-- Dev: Graph Builder -->
+<rect x="30" y="288" width="170" height="64" rx="7" fill="rgba(29,158,117,0.13)" stroke="rgba(29,158,117,0.36)" stroke-width="1"/>
+<text x="115" y="316" font-size="12.5" fill="#8de0c0" text-anchor="middle" font-weight="500">Graph Builder</text>
+<text x="115" y="334" font-size="10" fill="#1D9E75" text-anchor="middle">PyG Data(x, edge_index)</text>
+
+<!-- Dev: GraphSAGE -->
+<rect x="30" y="394" width="170" height="64" rx="7" fill="rgba(29,158,117,0.13)" stroke="rgba(29,158,117,0.36)" stroke-width="1"/>
+<text x="115" y="422" font-size="12.5" fill="#8de0c0" text-anchor="middle" font-weight="500">GraphSAGE GNN</text>
+<text x="115" y="440" font-size="10" fill="#1D9E75" text-anchor="middle">label + confidence</text>
+
+<!-- Dev left-col vertical arrows -->
+<line x1="115" y1="246" x2="115" y2="286" stroke="#1D9E75" stroke-width="1.5" marker-end="url(#a1)"/>
+<line x1="115" y1="352" x2="115" y2="392" stroke="#1D9E75" stroke-width="1.5" marker-end="url(#a1)"/>
+
+<!-- arrow labels -->
+<text x="120" y="270" font-size="9" fill="#1D9E75" font-family="'IBM Plex Mono',monospace">frame</text>
+<text x="120" y="376" font-size="9" fill="#1D9E75" font-family="'IBM Plex Mono',monospace">graph</text>
+
+<!-- Dev: Overlay Engine -->
+<rect x="250" y="288" width="170" height="64" rx="7" fill="rgba(29,158,117,0.13)" stroke="rgba(29,158,117,0.36)" stroke-width="1"/>
+<text x="335" y="316" font-size="12.5" fill="#8de0c0" text-anchor="middle" font-weight="500">Overlay Engine</text>
+<text x="335" y="334" font-size="10" fill="#1D9E75" text-anchor="middle">node_status / ghost_nodes</text>
+
+<!-- Dev: Error Timer -->
+<rect x="250" y="394" width="170" height="64" rx="7" fill="rgba(29,158,117,0.10)" stroke="rgba(29,158,117,0.26)" stroke-width="1"/>
+<text x="335" y="422" font-size="12.5" fill="#8de0c0" text-anchor="middle" font-weight="500">Error Timer</text>
+<text x="335" y="440" font-size="10" fill="#1D9E75" text-anchor="middle">錯誤 &gt;3s → 觸發 VLM</text>
+
+<!-- GNN → Overlay (horizontal) -->
+<line x1="200" y1="320" x2="248" y2="320" stroke="#1D9E75" stroke-width="1.5" marker-end="url(#a1)"/>
+<!-- GNN → Error Timer (horizontal) -->
+<line x1="200" y1="426" x2="248" y2="426" stroke="#1D9E75" stroke-width="1" stroke-dasharray="4 3" marker-end="url(#a1)"/>
+
+<!-- Vertical connector Camera Feed → MediaPipe -->
+<line x1="104" y1="108" x2="104" y2="180" stroke="#444" stroke-width="1.5" marker-end="url(#a0)"/>
+<text x="108" y="148" font-size="9" fill="#555" font-family="'IBM Plex Mono',monospace">frame</text>
+
+<!-- Overlay Engine → AR Canvas (up) -->
+<line x1="296" y1="288" x2="296" y2="110" stroke="#8B82E8" stroke-width="1.5" marker-end="url(#a2)"/>
+<text x="300" y="200" font-size="9" fill="#8B82E8" font-family="'IBM Plex Mono',monospace">overlay data</text>
+
+<!-- JSON schema strip at bottom of dev container -->
+<rect x="30" y="476" width="590" height="28" rx="5" fill="rgba(29,158,117,0.07)" stroke="rgba(29,158,117,0.15)" stroke-width="1"/>
+<text x="325" y="494" font-size="9.5" fill="#1D9E75" text-anchor="middle" font-family="'IBM Plex Mono',monospace">JSON out → { nodes, node_status, label, confidence, ghost_nodes, error_duration_ms, frame_ms }</text>
+
+<!-- ── VLM / Cloud container ── -->
+<rect x="652" y="150" width="276" height="290" rx="10" fill="rgba(200,139,32,0.045)" stroke="rgba(200,139,32,0.2)" stroke-width="1"/>
+<text x="666" y="170" font-size="9.5" fill="#C88B20" font-family="'IBM Plex Mono',monospace" letter-spacing="1.5" font-weight="500">CLOUD API</text>
+
+<!-- VLM box -->
+<rect x="668" y="182" width="244" height="84" rx="7" fill="rgba(200,139,32,0.12)" stroke="rgba(200,139,32,0.34)" stroke-width="1"/>
+<text x="790" y="214" font-size="13" fill="#f0c060" text-anchor="middle" font-weight="500">VLM API</text>
+<text x="790" y="232" font-size="10" fill="#C88B20" text-anchor="middle">GPT-4o Vision / Claude</text>
+<text x="790" y="250" font-size="10" fill="#C88B20" text-anchor="middle">截圖 + skeleton → 中文建議</text>
+
+<!-- Rate limiter -->
+<rect x="668" y="284" width="244" height="52" rx="7" fill="rgba(200,139,32,0.07)" stroke="rgba(200,139,32,0.18)" stroke-width="1" stroke-dasharray="4 3"/>
+<text x="790" y="308" font-size="12" fill="#C88B20" text-anchor="middle">Rate Limiter</text>
+<text x="790" y="326" font-size="10" fill="#666" text-anchor="middle">max 2 calls/min · $50 budget cap</text>
+
+<!-- VLM internal arrow -->
+<line x1="790" y1="266" x2="790" y2="282" stroke="#C88B20" stroke-width="1" marker-end="url(#a3)"/>
+
+<!-- Error Timer → VLM (horizontal) -->
+<line x1="420" y1="426" x2="666" y2="310" stroke="#C88B20" stroke-width="1.5" stroke-dasharray="5 3" marker-end="url(#a3)"/>
+<text x="520" y="380" font-size="9" fill="#C88B20" font-family="'IBM Plex Mono',monospace" transform="rotate(-22,520,380)">trigger (3s error)</text>
+
+<!-- VLM → Feedback Panel (up, right side) -->
+<line x1="790" y1="182" x2="488" y2="110" stroke="#C88B20" stroke-width="1.5" stroke-dasharray="5 3" marker-end="url(#a3)"/>
+<text x="680" y="128" font-size="9" fill="#C88B20" font-family="'IBM Plex Mono',monospace" transform="rotate(-18,680,128)">suggestion text</text>
+
+<!-- Overlay Engine → Error Timer (vertical) -->
+<line x1="335" y1="352" x2="335" y2="392" stroke="#1D9E75" stroke-width="1" stroke-dasharray="3 3" marker-end="url(#a1)"/>
+
+</svg>
+</div>
+
+<!-- TECH STACK -->
+<div class="sec-label">技術選型</div>
+<div class="stack-grid">
+  <div class="stack-card">
+    <div class="stack-head"><div class="stack-dot" style="background:var(--dev)"></div><span style="color:var(--dev)">Dev Team Stack</span></div>
+    <div class="stack-row"><span class="stack-name">Hand keypoint detection</span><span class="stack-pkg">MediaPipe Hands</span></div>
+    <div class="stack-row"><span class="stack-name">Graph neural network</span><span class="stack-pkg">PyTorch Geometric</span></div>
+    <div class="stack-row"><span class="stack-name">Model export</span><span class="stack-pkg">ONNX → TFLite</span></div>
+    <div class="stack-row"><span class="stack-name">Inference server (備援)</span><span class="stack-pkg">FastAPI</span></div>
+    <div class="stack-row"><span class="stack-name">VLM API</span><span class="stack-pkg">GPT-4o / Claude 3.5</span></div>
+    <div class="stack-row"><span class="stack-name">QC / training</span><span class="stack-pkg">PyTorch + Matplotlib</span></div>
+  </div>
+  <div class="stack-card">
+    <div class="stack-head"><div class="stack-dot" style="background:var(--fe)"></div><span style="color:var(--fe)">Frontend Team Stack</span></div>
+    <div class="stack-row"><span class="stack-name">App framework</span><span class="stack-pkg">Flutter (建議)</span></div>
+    <div class="stack-row"><span class="stack-name">Camera access</span><span class="stack-pkg">camera plugin</span></div>
+    <div class="stack-row"><span class="stack-name">Canvas overlay</span><span class="stack-pkg">CustomPainter</span></div>
+    <div class="stack-row"><span class="stack-name">On-device ML bridge</span><span class="stack-pkg">tflite_flutter</span></div>
+    <div class="stack-row"><span class="stack-name">State management</span><span class="stack-pkg">Riverpod</span></div>
+    <div class="stack-row"><span class="stack-name">HTTP / API</span><span class="stack-pkg">dio</span></div>
+  </div>
+</div>
+
+<!-- WEEK PLAN -->
+<div class="sec-label">Sprint 週計畫</div>
+
+<div class="week-card">
+  <div class="week-head">
+    <span class="week-num">W1 – W2</span>
+    <span class="week-title">骨架 Prototype — 桌面版跑通</span>
+    <span class="ms-badge ms-dev">Dev 先行</span>
+  </div>
+  <div class="week-cols">
+    <div class="week-col">
+      <div class="team-label"><div class="tl-dot" style="background:var(--dev)"></div><span style="color:var(--dev)">Dev Team</span></div>
+      <ul class="tasks">
+        <li><strong>環境建置</strong>：Python 3.11 + MediaPipe + OpenCV + PyTorch Geometric</li>
+        <li><strong>Keypoint 擷取</strong>：webcam 即時輸出 21 個 [x,y,z]，視覺化確認</li>
+        <li><strong>Skeleton overlay</strong>：依 <code>FINGER_CONNECTIONS</code> 畫連線，綠/紅節點</li>
+        <li><strong>Ghost F chord</strong>：hardcode 目標骨架，黃色虛線疊加</li>
+        <li><strong>角度計算</strong>：<code>angle_between()</code> 每關節輸出</li>
+        <li><strong>QC script</strong>：fchord_qc.py 以假資料測試通過</li>
+      </ul>
+    </div>
+    <div class="week-col">
+      <div class="team-label"><div class="tl-dot" style="background:var(--fe)"></div><span style="color:var(--fe)">Frontend Team</span></div>
+      <ul class="tasks">
+        <li><strong>Flutter 環境建置</strong>：iOS / Android 模擬器跑通</li>
+        <li><strong>設計系統</strong>：色票、字體、間距規範，Figma file 開工</li>
+        <li><strong>Camera preview</strong>：基礎全螢幕相機 + 靜態 UI frame</li>
+        <li><strong>Wireframe</strong>：主畫面 / 進度畫面低保真稿</li>
+        <li><strong>CustomPainter 研究</strong>：能在 camera feed 上畫線的 prototype</li>
+      </ul>
+    </div>
+  </div>
+  <div class="sync-bar">
+    <span class="sync-tag">Sync W2</span>
+    <span class="sync-text">Dev 輸出 <strong>JSON schema 草稿</strong> · Frontend 確認 <strong>CustomPainter 能接收 node 座標並畫線</strong> · 決定 <strong>D-01：On-device vs 雲端</strong></span>
+  </div>
+</div>
+
+<div class="week-card">
+  <div class="week-head">
+    <span class="week-num">W3 – W4</span>
+    <span class="week-title">資料蒐集 + GNN 訓練</span>
+    <span class="ms-badge ms-dev">Dev 核心週</span>
+  </div>
+  <div class="week-cols">
+    <div class="week-col">
+      <div class="team-label"><div class="tl-dot" style="background:var(--dev)"></div><span style="color:var(--dev)">Dev Team</span></div>
+      <ul class="tasks">
+        <li><strong>Labeling script</strong>：空白鍵拍照儲存 JSON，6 個 label 類別</li>
+        <li><strong>資料蒐集</strong>：~900 筆（含 3–5 位不同錄製者）</li>
+        <li><strong>QC 執行</strong>：fchord_qc.py 全跑，刪除 FAIL 樣本</li>
+        <li><strong>Graph 建構</strong>：PyG <code>Data(x, edge_index, y)</code> 格式</li>
+        <li><strong>GraphSAGE 訓練</strong>：3 層 SAGEConv + global mean pooling</li>
+        <li><strong>評估</strong>：confusion matrix，目標 &gt;85% val acc</li>
+        <li><strong>ONNX export</strong>：輸出 <code>fchord.onnx</code></li>
+      </ul>
+    </div>
+    <div class="week-col">
+      <div class="team-label"><div class="tl-dot" style="background:var(--fe)"></div><span style="color:var(--fe)">Frontend Team</span></div>
+      <ul class="tasks">
+        <li><strong>主畫面 Hi-Fi</strong>：相機 + skeleton overlay + 手指狀態列</li>
+        <li><strong>Overlay 動畫</strong>：節點顏色即時切換（綠/紅）動畫</li>
+        <li><strong>Ghost overlay UI</strong>：黃色虛線骨架層，與真實骨架同框</li>
+        <li><strong>Feedback card</strong>：底部浮現中文建議卡片 + 動畫</li>
+        <li><strong>Mock data 串接</strong>：用假 JSON 把整個 UI 跑通，不等 model</li>
+      </ul>
+    </div>
+  </div>
+  <div class="sync-bar">
+    <span class="sync-tag">Sync W4</span>
+    <span class="sync-text">Dev 交付 <strong>fchord.onnx / .tflite</strong> 給 Frontend · 雙方對齊 <strong>frame JSON schema v1</strong> 所有欄位 · Frontend 確認 <strong>mock UI 通過設計審查</strong></span>
+  </div>
+</div>
+
+<div class="week-card">
+  <div class="week-head">
+    <span class="week-num">W5 – W6</span>
+    <span class="week-title">VLM 整合 + 真實 Model 串接</span>
+    <span class="ms-badge ms-shared">雙隊整合週</span>
+  </div>
+  <div class="week-cols">
+    <div class="week-col">
+      <div class="team-label"><div class="tl-dot" style="background:var(--dev)"></div><span style="color:var(--dev)">Dev Team</span></div>
+      <ul class="tasks">
+        <li><strong>TFLite 轉換</strong>：ONNX → TFLite，目標 &lt;30ms/frame</li>
+        <li><strong>觸發邏輯</strong>：錯誤計時器，超 3s 觸發 VLM call</li>
+        <li><strong>VLM prompt 設計</strong>：截圖 + skeleton JSON → 中文建議 template</li>
+        <li><strong>限流機制</strong>：每分鐘最多 2 次，費用監控</li>
+        <li><strong>FastAPI server</strong>（若採雲端方案）：<code>/infer</code> endpoint</li>
+        <li><strong>壓力測試</strong>：連跑 10 分鐘確認記憶體不 leak</li>
+      </ul>
+    </div>
+    <div class="week-col">
+      <div class="team-label"><div class="tl-dot" style="background:var(--fe)"></div><span style="color:var(--fe)">Frontend Team</span></div>
+      <ul class="tasks">
+        <li><strong>tflite_flutter 整合</strong>：真實 model 載入，替換 mock data</li>
+        <li><strong>Frame pipeline</strong>：每幀 → model → overlay，&lt;30ms 目標</li>
+        <li><strong>VLM suggestion 顯示</strong>：非同步載入 + loading 動畫</li>
+        <li><strong>Progress screen</strong>：練習時長、成功率統計</li>
+        <li><strong>本地儲存</strong>：SQLite 記錄每次 session</li>
+      </ul>
+    </div>
+  </div>
+  <div class="sync-bar">
+    <span class="sync-tag">Sync W6</span>
+    <span class="sync-text"><strong>End-to-end demo</strong>：真實手機 + 真實手 + 真實 model 完整跑一次 · 確認 <strong>frame rate &gt;20fps</strong> · VLM 建議 <strong>人工評分（5 人 × 10 筆）</strong></span>
+  </div>
+</div>
+
+<div class="week-card">
+  <div class="week-head">
+    <span class="week-num">W7 – W8</span>
+    <span class="week-title">Beta 打磨 + 用戶測試</span>
+    <span class="ms-badge ms-fe">Frontend 主導</span>
+  </div>
+  <div class="week-cols">
+    <div class="week-col">
+      <div class="team-label"><div class="tl-dot" style="background:var(--dev)"></div><span style="color:var(--dev)">Dev Team</span></div>
+      <ul class="tasks">
+        <li><strong>模型迭代</strong>：根據 beta 反饋補充邊緣案例，重新訓練</li>
+        <li><strong>閾值調校</strong>：根據真實用戶手型調整 <code>FCHORD_ANGLE_REFS</code></li>
+        <li><strong>錯誤分析</strong>：confusion matrix → 找最常誤分類 label</li>
+        <li><strong>Crash 監控</strong>：OOM / inference timeout 日誌</li>
+        <li><strong>技術文件</strong>：model card、API schema、部署說明</li>
+      </ul>
+    </div>
+    <div class="week-col">
+      <div class="team-label"><div class="tl-dot" style="background:var(--fe)"></div><span style="color:var(--fe)">Frontend Team</span></div>
+      <ul class="tasks">
+        <li><strong>Onboarding 流程</strong>：首次使用引導，解釋 overlay 顏色含義</li>
+        <li><strong>可及性</strong>：色盲模式（紅綠 → 橘藍）</li>
+        <li><strong>效能優化</strong>：減少 rebuild，確保 60fps UI</li>
+        <li><strong>Beta 發布</strong>：TestFlight（iOS）/ Internal Track（Android）</li>
+        <li><strong>用戶訪談</strong>：招募 10 位吉他自學者，錄製使用過程</li>
+      </ul>
+    </div>
+  </div>
+  <div class="sync-bar">
+    <span class="sync-tag">Sync W8</span>
+    <span class="sync-text"><strong>Go / No-go</strong>：7 天留存率 &gt;30%？F chord 成功率有提升？ · Go → 規劃 V1.1（其他和弦）· No-go → 訪談 data 分析核心假設</span>
+  </div>
+</div>
+
+<!-- CONTRACT TABLE -->
+<div class="sec-label">Dev ↔ Frontend 介面契約 — Frame JSON Schema v1</div>
+<table class="ctable">
+  <thead><tr><th>欄位</th><th>型別</th><th>說明</th><th>來源</th></tr></thead>
+  <tbody>
+    <tr><td><code>nodes</code></td><td><code>float[21][3]</code></td><td>MediaPipe 21 keypoints [x,y,z]，normalized 0–1</td><td class="owner-dev">Dev</td></tr>
+    <tr><td><code>node_status</code></td><td><code>int[21]</code></td><td>每節點狀態：0=ok，1=warn，2=error</td><td class="owner-dev">Dev</td></tr>
+    <tr><td><code>label</code></td><td><code>string</code></td><td>GNN 分類結果，如 <code>"err_index_low"</code></td><td class="owner-dev">Dev</td></tr>
+    <tr><td><code>confidence</code></td><td><code>float</code></td><td>GNN softmax 最高類別置信度 0–1</td><td class="owner-dev">Dev</td></tr>
+    <tr><td><code>ghost_nodes</code></td><td><code>float[21][2]</code></td><td>目標 F chord 骨架（靜態，首次載入傳一次）</td><td class="owner-dev">Dev</td></tr>
+    <tr><td><code>error_duration_ms</code></td><td><code>int</code></td><td>連續錯誤持續時間（ms），前端可顯示計時</td><td class="owner-dev">Dev</td></tr>
+    <tr><td><code>suggestion</code></td><td><code>string | null</code></td><td>VLM 建議文字，觸發後非同步到達</td><td class="owner-shared">VLM API</td></tr>
+    <tr><td><code>frame_ms</code></td><td><code>int</code></td><td>本幀推理耗時（ms），FPS debug 用</td><td class="owner-dev">Dev</td></tr>
+  </tbody>
+</table>
+
+<!-- DECISIONS -->
+<div class="sec-label">關鍵決策（需雙隊確認）</div>
+<div class="dec-list">
+  <div class="dec-item">
+    <span class="dec-id">D-01</span>
+    <div class="dec-body">
+      <div class="dec-q">On-device TFLite vs 雲端 FastAPI？</div>
+      <div class="dec-note">TFLite：無延遲、隱私好、model &lt;20MB · FastAPI：方便迭代、無大小限制，需網路。建議先 FastAPI 驗證，V1.1 再轉 TFLite。</div>
+    </div>
+    <span class="dec-badge ms-shared">W2 決定</span>
+  </div>
+  <div class="dec-item">
+    <span class="dec-id">D-02</span>
+    <div class="dec-body">
+      <div class="dec-q">Flutter vs React Native？</div>
+      <div class="dec-note">Flutter：CustomPainter 對 overlay 支援好，tflite_flutter 成熟 · RN：若 FE Team 熟 JS 可選，但 canvas overlay 較複雜。</div>
+    </div>
+    <span class="dec-badge ms-fe">FE W1 決定</span>
+  </div>
+  <div class="dec-item">
+    <span class="dec-id">D-03</span>
+    <div class="dec-body">
+      <div class="dec-q">VLM 用哪個 API？</div>
+      <div class="dec-note">GPT-4o Vision 或 Claude 3.5 Sonnet 皆可。各測 10 筆，人工評中文建議品質後決定。預算 $50 beta 期間。</div>
+    </div>
+    <span class="dec-badge ms-dev">Dev W5 決定</span>
+  </div>
+  <div class="dec-item">
+    <span class="dec-id">D-04</span>
+    <div class="dec-body">
+      <div class="dec-q">Overlay 座標換算誰負責？</div>
+      <div class="dec-note">建議 Dev 輸出 normalized [0,1]，Frontend 根據螢幕解析度乘以 width/height。Frontend 最懂自己的 canvas 尺寸，不應由 Dev 推算。</div>
+    </div>
+    <span class="dec-badge ms-shared">W2 對齊</span>
+  </div>
+  <div class="dec-item">
+    <span class="dec-id">D-05</span>
+    <div class="dec-body">
+      <div class="dec-q">Beta 用戶招募來源？</div>
+      <div class="dec-note">PTT 吉他版、Dcard 音樂版、Facebook 吉他社團、學校吉他社。目標 10–15 人，承諾 1 週試用 + 15 分鐘訪談。</div>
+    </div>
+    <span class="dec-badge ms-shared">W6 啟動</span>
+  </div>
+</div>
+
+<!-- METRICS -->
+<div class="sec-label">成功指標</div>
+<div class="metrics-grid">
+  <div class="met-card"><div class="met-label">主要指標</div><div class="met-val" style="color:var(--dev)">&gt;30%</div><div class="met-desc">Beta 7 天留存率</div></div>
+  <div class="met-card"><div class="met-label">技術指標</div><div class="met-val" style="color:var(--dev)">&gt;85%</div><div class="met-desc">GNN 分類準確率</div></div>
+  <div class="met-card"><div class="met-label">效能指標</div><div class="met-val" style="color:var(--fe)">&lt;30ms</div><div class="met-desc">每幀推理時間</div></div>
+  <div class="met-card"><div class="met-label">UX 指標</div><div class="met-val" style="color:var(--fe)">&gt;7/10</div><div class="met-desc">VLM 建議有幫助評分</div></div>
+  <div class="met-card"><div class="met-label">放棄線</div><div class="met-val" style="color:var(--danger)">&lt;20%</div><div class="met-desc">7 天留存 → 暫停分析</div></div>
+  <div class="met-card"><div class="met-label">費用上限</div><div class="met-val" style="color:var(--sync)">$50</div><div class="met-desc">Beta VLM API 預算</div></div>
+</div>
+
+<!-- RISK -->
+<div class="sec-label">風險與應對</div>
+<table class="rtable">
+  <thead><tr><th>風險</th><th>機率</th><th>影響</th><th>應對</th></tr></thead>
+  <tbody>
+    <tr><td>資料不足，GNN &lt;85%</td><td class="risk-m">中</td><td class="risk-h">高</td><td>W4 先跑，不足立即加錄；或降為二分類先驗證核心假設</td></tr>
+    <tr><td>TFLite 推理 &gt;30ms</td><td class="risk-m">中</td><td class="risk-m">中</td><td>改雲端 FastAPI；CustomPainter 渲染獨立 thread</td></tr>
+    <tr><td>VLM 中文建議品質差</td><td class="risk-l">低</td><td class="risk-h">高</td><td>Prompt engineering 迭代；加入截圖 + skeleton JSON 雙重 context</td></tr>
+    <tr><td>tflite_flutter 整合問題</td><td class="risk-m">中</td><td class="risk-m">中</td><td>W5 改 FastAPI 雲端方案備援，不阻塞 Frontend 進度</td></tr>
+    <tr><td>Beta 用戶招募不足</td><td class="risk-l">低</td><td class="risk-l">低</td><td>社群貼文 + 朋友網路，給咖啡券等小禮品</td></tr>
+  </tbody>
+</table>
+
+<div class="footer">
+  <span>F Chord Coach · Sprint Plan v1.0</span>
+  <span>Dev Team (ML/CV) ↔ Frontend Team (Flutter/UI)</span>
+  <span>8 weeks · iOS / Android</span>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,552 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>F Chord Coach — 會議討論報告</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap');
+
+:root {
+  --bg:         #0c0c0c;
+  --bg2:        #141414;
+  --bg3:        #1c1c1c;
+  --bg4:        #242424;
+  --border:     rgba(255,255,255,0.07);
+  --border2:    rgba(255,255,255,0.12);
+  --text:       #e6e4de;
+  --muted:      #555;
+  --muted2:     #888;
+  --dev:        #1D9E75;
+  --dev-bg:     rgba(29,158,117,0.10);
+  --dev-border: rgba(29,158,117,0.25);
+  --fe:         #8B82E8;
+  --fe-bg:      rgba(139,130,232,0.10);
+  --fe-border:  rgba(139,130,232,0.25);
+  --sync:       #C88B20;
+  --sync-bg:    rgba(200,139,32,0.10);
+  --sync-border:rgba(200,139,32,0.25);
+  --danger:     #E24B4A;
+  --danger-bg:  rgba(226,75,74,0.10);
+  --danger-border:rgba(226,75,74,0.25);
+  --mono: 'IBM Plex Mono', monospace;
+  --sans: 'IBM Plex Sans', sans-serif;
+  --rad: 8px;
+}
+
+*,*::before,*::after { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--sans);
+  font-size: 14px;
+  line-height: 1.65;
+  padding: 3rem 2.5rem 5rem;
+  max-width: 1020px;
+  margin: 0 auto;
+}
+
+/* ── HEADER ── */
+.header { padding: 2.5rem 0; margin-bottom: .5rem; border-bottom: 1px solid var(--border); }
+.eyebrow { font-family: var(--mono); font-size: 11px; color: var(--sync); letter-spacing: .1em; text-transform: uppercase; margin-bottom: .75rem; }
+h1 { font-size: 2.1rem; font-weight: 300; letter-spacing: -.035em; margin-bottom: .5rem; line-height: 1.2; }
+h1 strong { font-weight: 600; }
+.header-desc { color: var(--muted2); font-size: 13.5px; margin-top: .4rem; }
+.header-pills { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 1.25rem; }
+.pill { font-family: var(--mono); font-size: 11px; padding: 4px 12px; border-radius: 100px; border: 1px solid var(--border2); color: var(--muted2); background: var(--bg2); }
+
+/* ── SECTION LABEL ── */
+.sec-label {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin: 3.5rem 0 1.25rem;
+  padding-bottom: .6rem;
+  border-bottom: 1px solid var(--border);
+}
+
+/* ── SUMMARY CARDS ── */
+.summary-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; margin-bottom: .5rem; }
+.sum-card { background: var(--bg2); border: 1px solid var(--border); border-radius: var(--rad); padding: 1.1rem 1.25rem; }
+.sum-label { font-family: var(--mono); font-size: 10px; color: var(--muted); text-transform: uppercase; letter-spacing: .07em; margin-bottom: 8px; }
+.sum-title { font-size: 14px; font-weight: 500; margin-bottom: 4px; }
+.sum-desc { font-size: 12px; color: #666; line-height: 1.6; }
+
+/* ── DECISION CARDS ── */
+.dec-list { display: flex; flex-direction: column; gap: 10px; }
+.dec-card {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: var(--rad);
+  overflow: hidden;
+}
+.dec-head {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: .85rem 1.25rem;
+  background: var(--bg3);
+  border-bottom: 1px solid var(--border);
+  flex-wrap: wrap;
+}
+.dec-id { font-family: var(--mono); font-size: 11px; color: var(--muted); min-width: 40px; }
+.dec-q { font-size: 14px; font-weight: 500; flex: 1; }
+.badge {
+  font-family: var(--mono);
+  font-size: 10px;
+  padding: 3px 10px;
+  border-radius: 4px;
+  border: 1px solid;
+  white-space: nowrap;
+}
+.badge-sync   { color: var(--sync);   border-color: var(--sync-border);   background: var(--sync-bg);   }
+.badge-dev    { color: var(--dev);    border-color: var(--dev-border);    background: var(--dev-bg);    }
+.badge-fe     { color: var(--fe);     border-color: var(--fe-border);     background: var(--fe-bg);     }
+.badge-danger { color: var(--danger); border-color: var(--danger-border); background: var(--danger-bg); }
+
+.dec-body { padding: 1rem 1.25rem; }
+.dec-context { font-size: 12.5px; color: var(--muted2); margin-bottom: 1rem; line-height: 1.7; }
+
+.options-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: .85rem; }
+.option-box { background: var(--bg3); border: 1px solid var(--border); border-radius: 6px; padding: .85rem 1rem; }
+.option-label { font-family: var(--mono); font-size: 10px; text-transform: uppercase; letter-spacing: .07em; margin-bottom: 6px; }
+.option-title { font-size: 13px; font-weight: 500; margin-bottom: 4px; }
+.option-desc { font-size: 12px; color: #666; line-height: 1.55; }
+.option-box.recommended { border-color: var(--dev-border); background: var(--dev-bg); }
+.option-box.recommended .option-label { color: var(--dev); }
+
+.rec-bar {
+  background: var(--sync-bg);
+  border-top: 1px solid var(--sync-border);
+  padding: .75rem 1.25rem;
+  display: flex;
+  gap: .85rem;
+  align-items: flex-start;
+}
+.rec-tag { font-family: var(--mono); font-size: 10px; color: var(--sync); text-transform: uppercase; letter-spacing: .08em; min-width: 90px; padding-top: 1px; flex-shrink: 0; }
+.rec-text { font-size: 12px; color: #999; line-height: 1.6; }
+.rec-text strong { color: var(--sync); font-weight: 500; }
+
+.ask-list { list-style: none; }
+.ask-list li {
+  font-size: 12.5px;
+  color: #a0a0a0;
+  padding: 5px 0 5px 1.1rem;
+  position: relative;
+  border-bottom: 1px solid rgba(255,255,255,.03);
+  line-height: 1.55;
+}
+.ask-list li:last-child { border-bottom: none; }
+.ask-list li::before { content: "→"; position: absolute; left: 0; color: var(--muted); }
+.ask-list li code {
+  font-family: var(--mono);
+  font-size: 10.5px;
+  background: var(--bg4);
+  border: 1px solid var(--border);
+  padding: 1px 5px;
+  border-radius: 3px;
+  color: #ccc;
+}
+
+/* ── ROLES TABLE ── */
+.role-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.role-card { background: var(--bg2); border: 1px solid var(--border); border-radius: var(--rad); overflow: hidden; }
+.role-head {
+  padding: .7rem 1rem;
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.role-dot { width: 7px; height: 7px; border-radius: 2px; flex-shrink: 0; }
+.role-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding: 8px 1rem;
+  border-bottom: 1px solid var(--border);
+  font-size: 12.5px;
+  gap: 12px;
+}
+.role-row:last-child { border-bottom: none; }
+.role-item { color: var(--muted2); flex: 1; }
+.role-note { font-family: var(--mono); font-size: 11px; color: var(--text); text-align: right; }
+
+/* ── FLOW DIAGRAM ── */
+.flow-wrap { background: var(--bg2); border: 1px solid var(--border); border-radius: var(--rad); padding: 1.5rem; overflow-x: auto; margin-bottom: .5rem; }
+
+/* ── RISK TABLE ── */
+.rtable { width: 100%; border-collapse: collapse; font-size: 12.5px; background: var(--bg2); border: 1px solid var(--border); border-radius: var(--rad); overflow: hidden; }
+.rtable th { font-family: var(--mono); font-size: 10px; text-transform: uppercase; letter-spacing: .08em; color: var(--muted); text-align: left; padding: .6rem 1rem; background: var(--bg3); border-bottom: 1px solid var(--border2); }
+.rtable td { padding: .65rem 1rem; border-bottom: 1px solid var(--border); color: #a0a0a0; vertical-align: top; line-height: 1.55; }
+.rtable tr:last-child td { border-bottom: none; }
+.risk-h { color: var(--danger); font-family: var(--mono); font-size: 11px; }
+.risk-m { color: var(--sync);   font-family: var(--mono); font-size: 11px; }
+.risk-l { color: var(--dev);    font-family: var(--mono); font-size: 11px; }
+
+/* ── NEXT STEPS ── */
+.steps-list { display: flex; flex-direction: column; gap: 8px; }
+.step-item {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: var(--rad);
+  padding: .9rem 1.25rem;
+  display: flex;
+  gap: 1rem;
+  align-items: flex-start;
+}
+.step-num { font-family: var(--mono); font-size: 10px; color: var(--muted); min-width: 24px; padding-top: 2px; }
+.step-body { flex: 1; }
+.step-title { font-size: 13.5px; font-weight: 500; margin-bottom: 3px; }
+.step-desc { font-size: 12px; color: #777; line-height: 1.6; }
+
+/* ── FOOTER ── */
+.footer {
+  margin-top: 4rem;
+  padding-top: 1.25rem;
+  border-top: 1px solid var(--border);
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--muted);
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+@media(max-width: 680px) {
+  body { padding: 2rem 1.25rem 4rem; }
+  h1 { font-size: 1.6rem; }
+  .summary-grid { grid-template-columns: 1fr; }
+  .options-grid { grid-template-columns: 1fr; }
+  .role-grid { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="header">
+  <div class="eyebrow">F Chord Coach · 第一次會議</div>
+  <h1>專案討論<strong>準備報告</strong></h1>
+  <p class="header-desc">分工確認、技術決策、待討論問題 — 給前後端負責人的會前參考</p>
+  <div class="header-pills">
+    <span class="pill">分工確認</span>
+    <span class="pill">3 個技術決策</span>
+    <span class="pill">待朋友回答的問題</span>
+    <span class="pill">建議開發順序</span>
+  </div>
+</div>
+
+<!-- CONFIRMED DECISIONS -->
+<div class="sec-label">已確認事項</div>
+<div class="summary-grid">
+  <div class="sum-card">
+    <div class="sum-label">分工</div>
+    <div class="sum-title" style="color:var(--fe)">你負責前後端</div>
+    <div class="sum-desc">Flutter App、FastAPI 後端、VLM API 串接、SQLite 本地儲存</div>
+  </div>
+  <div class="sum-card">
+    <div class="sum-label">分工</div>
+    <div class="sum-title" style="color:var(--dev)">朋友負責 AI</div>
+    <div class="sum-desc">MediaPipe、GNN 訓練、資料蒐集、ONNX 匯出</div>
+  </div>
+  <div class="sum-card">
+    <div class="sum-label">D-01 已決定</div>
+    <div class="sum-title" style="color:var(--sync)">先走雲端方案</div>
+    <div class="sum-desc">FastAPI server 負責推理，model 更新時不需重新發布 App</div>
+  </div>
+</div>
+
+<!-- DECISIONS TO DISCUSS -->
+<div class="sec-label">會議中需要確認的技術決策</div>
+<div class="dec-list">
+
+  <!-- DECISION A -->
+  <div class="dec-card">
+    <div class="dec-head">
+      <span class="dec-id">討論 A</span>
+      <span class="dec-q">MediaPipe 跑在哪裡？（最重要）</span>
+      <span class="badge badge-sync">需雙方決定</span>
+    </div>
+    <div class="dec-body">
+      <p class="dec-context">
+        這個決策決定你的 FastAPI 要接收什麼資料，也決定整個系統的延遲表現。
+        MediaPipe 是負責「看到手、給出 21 個關節座標」的工具，它可以跑在手機上或是你的 server 上，兩者有明顯差異。
+      </p>
+      <div class="options-grid">
+        <div class="option-box">
+          <div class="option-label" style="color:var(--danger)">方案 X — Server 上跑 MediaPipe</div>
+          <div class="option-title">手機傳圖片給後端</div>
+          <div class="option-desc">
+            每幀把相機截圖壓縮後傳給 FastAPI，Server 跑 MediaPipe 取得座標，再跑 GNN 分類，回傳 JSON。<br><br>
+            問題：圖片資料量大，網路延遲難以達到 30ms 目標。優點：你朋友直接在 server 管所有 AI 邏輯。
+          </div>
+        </div>
+        <div class="option-box recommended">
+          <div class="option-label">方案 Y — 手機上跑 MediaPipe（建議）</div>
+          <div class="option-title">手機傳座標給後端</div>
+          <div class="option-desc">
+            手機端跑 MediaPipe 取得座標（21 個小數字），把這些座標傳給 FastAPI，Server 只需跑 GNN 分類，回傳 JSON。<br><br>
+            問題：Flutter 的 MediaPipe 套件目前不成熟。優點：延遲低，後端邏輯簡單很多。
+          </div>
+        </div>
+      </div>
+      <div class="rec-bar">
+        <span class="rec-tag">你的問題</span>
+        <span class="rec-text">「Flutter 有沒有辦法跑 MediaPipe？我查到官方套件還沒正式釋出，第三方套件也不穩定。如果手機端跑不了，我們 Server 接圖片的話延遲會有多嚴重？有沒有辦法用降幀或壓縮解決？」</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- DECISION B -->
+  <div class="dec-card">
+    <div class="dec-head">
+      <span class="dec-id">討論 B</span>
+      <span class="dec-q">D-04：座標換算確認由你負責</span>
+      <span class="badge badge-fe">前端負責</span>
+    </div>
+    <div class="dec-body">
+      <p class="dec-context">
+        你朋友的 AI 輸出的骨架座標是 0 到 1 之間的比例值（normalized），例如 x: 0.35, y: 0.62。
+        但 Flutter 的 CustomPainter 需要實際像素座標才能在螢幕上畫圖。換算邏輯由你在 Flutter 端處理，不需要朋友介入。
+      </p>
+      <div class="options-grid">
+        <div class="option-box" style="grid-column: 1 / -1; max-width: 480px;">
+          <div class="option-label" style="color:var(--fe)">換算公式</div>
+          <div class="option-title">很簡單，一行搞定</div>
+          <div class="option-desc">
+            實際 x 像素 = normalized_x × 螢幕寬度<br>
+            實際 y 像素 = normalized_y × 螢幕高度<br><br>
+            由你在 Flutter 的 CustomPainter 裡處理，你朋友只需要確保輸出的座標都在 0–1 之間。
+          </div>
+        </div>
+      </div>
+      <div class="rec-bar">
+        <span class="rec-tag">你的問題</span>
+        <span class="rec-text">「<code>nodes</code> 和 <code>ghost_nodes</code> 的座標你確認都是 normalized 0–1 嗎？有沒有可能超出這個範圍（例如手離開鏡頭邊緣時）？我這邊需要做邊界保護。」</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- DECISION C -->
+  <div class="dec-card">
+    <div class="dec-head">
+      <span class="dec-id">討論 C</span>
+      <span class="dec-q">JSON Schema 逐欄位確認</span>
+      <span class="badge badge-sync">需雙方對齊</span>
+    </div>
+    <div class="dec-body">
+      <p class="dec-context">
+        你們的整合靠這份 JSON 契約，現在先對齊草稿，之後才能各自平行開發。每個欄位你都要清楚它的用途，因為你要在 Flutter 裡接收並渲染。
+      </p>
+      <div class="options-grid" style="grid-template-columns: 1fr;">
+        <div class="option-box">
+          <div class="option-label" style="color:var(--dev)">草稿 Schema（每幀回傳一次）</div>
+          <div class="option-desc" style="font-family: var(--mono); font-size: 11px; line-height: 2; color: #aaa;">
+            nodes: float[21][3] — 21 個關節 [x, y, z]，normalized 0–1<br>
+            node_status: int[21] — 每節點狀態：0=正常, 1=警告, 2=錯誤<br>
+            label: string — GNN 分類結果，如 "err_index_low"<br>
+            confidence: float — 分類信心度 0–1<br>
+            ghost_nodes: float[21][2] — 目標 F chord 骨架（靜態）<br>
+            error_duration_ms: int — 連續錯誤持續時間（ms）<br>
+            suggestion: string | null — VLM 建議文字（非同步）<br>
+            frame_ms: int — 本幀推理耗時（ms）
+          </div>
+        </div>
+      </div>
+      <div class="rec-bar">
+        <span class="rec-tag">你的問題</span>
+        <span class="rec-text">「<code>ghost_nodes</code> 是每幀都傳還是只傳一次就快取？<code>suggestion</code> 是在同一個 response 裡回傳還是另一個獨立的 API call？<code>label</code> 目前有哪幾個值，我需要知道完整清單才能在 UI 上對應顯示文字。」</span>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- ROLE SUMMARY -->
+<div class="sec-label">分工一覽</div>
+<div class="role-grid">
+  <div class="role-card">
+    <div class="role-head"><div class="role-dot" style="background:var(--fe)"></div><span style="color:var(--fe)">你負責</span></div>
+    <div class="role-row"><span class="role-item">Flutter App 相機畫面</span><span class="role-note">camera plugin</span></div>
+    <div class="role-row"><span class="role-item">骨架 overlay 渲染</span><span class="role-note">CustomPainter</span></div>
+    <div class="role-row"><span class="role-item">座標換算（normalized → pixel）</span><span class="role-note">D-04</span></div>
+    <div class="role-row"><span class="role-item">FastAPI 後端 server</span><span class="role-note">/infer endpoint</span></div>
+    <div class="role-row"><span class="role-item">VLM API 串接與限流</span><span class="role-note">max 2 calls/min</span></div>
+    <div class="role-row"><span class="role-item">Progress screen + 本地儲存</span><span class="role-note">SQLite</span></div>
+    <div class="role-row"><span class="role-item">Mock data 串接（等 model 前）</span><span class="role-note">假 JSON 跑通 UI</span></div>
+  </div>
+  <div class="role-card">
+    <div class="role-head"><div class="role-dot" style="background:var(--dev)"></div><span style="color:var(--dev)">朋友負責</span></div>
+    <div class="role-row"><span class="role-item">MediaPipe 環境建置</span><span class="role-note">Python</span></div>
+    <div class="role-row"><span class="role-item">21 個關節座標擷取</span><span class="role-note">keypoints</span></div>
+    <div class="role-row"><span class="role-item">資料蒐集與標記</span><span class="role-note">~900 筆</span></div>
+    <div class="role-row"><span class="role-item">GraphSAGE GNN 訓練</span><span class="role-note">PyTorch Geometric</span></div>
+    <div class="role-row"><span class="role-item">模型評估與調校</span><span class="role-note">目標 &gt;85% acc</span></div>
+    <div class="role-row"><span class="role-item">ONNX 匯出</span><span class="role-note">交付給你</span></div>
+    <div class="role-row"><span class="role-item">Ghost F chord 骨架定義</span><span class="role-note">目標姿勢座標</span></div>
+  </div>
+</div>
+
+<!-- DATA FLOW -->
+<div class="sec-label">確認後的資料流</div>
+<div class="flow-wrap">
+<svg viewBox="0 0 940 200" width="100%" xmlns="http://www.w3.org/2000/svg" style="font-family:'IBM Plex Sans',sans-serif;max-width:940px">
+<defs>
+  <marker id="arr" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+    <path d="M2 1L8 5L2 9" fill="none" stroke="context-stroke" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+  </marker>
+</defs>
+
+<!-- Node 1: Camera -->
+<rect x="20" y="60" width="130" height="80" rx="8" fill="rgba(139,130,232,0.12)" stroke="rgba(139,130,232,0.35)" stroke-width="1"/>
+<text x="85" y="93" font-size="13" fill="#c8c4f2" text-anchor="middle" font-weight="500">手機相機</text>
+<text x="85" y="112" font-size="10" fill="#8B82E8" text-anchor="middle">Flutter camera plugin</text>
+
+<!-- Arrow 1 -->
+<line x1="150" y1="100" x2="205" y2="100" stroke="#555" stroke-width="1.5" marker-end="url(#arr)"/>
+<text x="177" y="90" font-size="9" fill="#555" font-family="'IBM Plex Mono',monospace" text-anchor="middle">每幀</text>
+
+<!-- Node 2: MediaPipe (TBD) -->
+<rect x="205" y="48" width="150" height="104" rx="8" fill="rgba(200,139,32,0.10)" stroke="rgba(200,139,32,0.30)" stroke-width="1" stroke-dasharray="5 3"/>
+<text x="280" y="82" font-size="12" fill="#f0c060" text-anchor="middle" font-weight="500">MediaPipe</text>
+<text x="280" y="100" font-size="10" fill="#C88B20" text-anchor="middle">21 個關節座標</text>
+<text x="280" y="133" font-size="9" fill="#C88B20" text-anchor="middle" font-family="'IBM Plex Mono',monospace">位置待討論 A 確認</text>
+
+<!-- Arrow 2 -->
+<line x1="355" y1="100" x2="415" y2="100" stroke="#555" stroke-width="1.5" marker-end="url(#arr)"/>
+<text x="385" y="90" font-size="9" fill="#555" font-family="'IBM Plex Mono',monospace" text-anchor="middle">座標</text>
+
+<!-- Node 3: FastAPI -->
+<rect x="415" y="60" width="150" height="80" rx="8" fill="rgba(29,158,117,0.12)" stroke="rgba(29,158,117,0.35)" stroke-width="1"/>
+<text x="490" y="93" font-size="13" fill="#8de0c0" text-anchor="middle" font-weight="500">FastAPI Server</text>
+<text x="490" y="112" font-size="10" fill="#1D9E75" text-anchor="middle">GNN 推理 → 分類結果</text>
+
+<!-- Arrow 3 -->
+<line x1="565" y1="100" x2="625" y2="100" stroke="#555" stroke-width="1.5" marker-end="url(#arr)"/>
+<text x="595" y="90" font-size="9" fill="#555" font-family="'IBM Plex Mono',monospace" text-anchor="middle">JSON</text>
+
+<!-- Node 4: Flutter UI -->
+<rect x="625" y="60" width="150" height="80" rx="8" fill="rgba(139,130,232,0.12)" stroke="rgba(139,130,232,0.35)" stroke-width="1"/>
+<text x="700" y="93" font-size="13" fill="#c8c4f2" text-anchor="middle" font-weight="500">Flutter UI</text>
+<text x="700" y="112" font-size="10" fill="#8B82E8" text-anchor="middle">座標換算 + overlay 渲染</text>
+
+<!-- Arrow 4: VLM branch -->
+<line x1="490" y1="140" x2="490" y2="165" stroke="#C88B20" stroke-width="1" stroke-dasharray="4 3" marker-end="url(#arr)"/>
+<rect x="415" y="165" width="150" height="24" rx="5" fill="rgba(200,139,32,0.10)" stroke="rgba(200,139,32,0.25)" stroke-width="1"/>
+<text x="490" y="181" font-size="10" fill="#C88B20" text-anchor="middle" font-family="'IBM Plex Mono',monospace">VLM API（錯誤 &gt;3s 觸發）</text>
+
+<!-- Node 5: VLM to Flutter -->
+<line x1="700" y1="140" x2="700" y2="158" stroke="#C88B20" stroke-width="1" stroke-dasharray="4 3" marker-end="url(#arr)"/>
+<text x="700" y="175" font-size="9" fill="#C88B20" text-anchor="middle" font-family="'IBM Plex Mono',monospace">建議文字 → 顯示</text>
+
+<!-- Owner labels -->
+<text x="85" y="165" font-size="9" fill="#8B82E8" text-anchor="middle" font-family="'IBM Plex Mono',monospace">你的負責</text>
+<text x="490" y="50" font-size="9" fill="#1D9E75" text-anchor="middle" font-family="'IBM Plex Mono',monospace">你的負責</text>
+<text x="700" y="50" font-size="9" fill="#8B82E8" text-anchor="middle" font-family="'IBM Plex Mono',monospace">你的負責</text>
+<text x="280" y="40" font-size="9" fill="#C88B20" text-anchor="middle" font-family="'IBM Plex Mono',monospace">待討論 A</text>
+
+</svg>
+</div>
+
+<!-- QUESTIONS LIST -->
+<div class="sec-label">你今天要問朋友的問題清單</div>
+<ul class="ask-list">
+  <li>MediaPipe 能不能在 Flutter 手機端跑？你有沒有查過相關套件的可行性？（討論 A）</li>
+  <li>如果 MediaPipe 跑在 server 上，我每幀傳壓縮圖片，你覺得延遲能控制在 30ms 以內嗎？還是要降幀率？</li>
+  <li><code>ghost_nodes</code> 是每幀都包在 response 裡，還是只在第一次回傳後讓我快取？</li>
+  <li><code>suggestion</code>（VLM 建議）是同一個 <code>/infer</code> endpoint 回傳，還是你打算做一個獨立的 <code>/suggest</code> endpoint？</li>
+  <li><code>label</code> 欄位完整有哪幾個值？我需要在 UI 上對應顯示中文提示，要先知道所有可能值。</li>
+  <li>你打算什麼時候交付第一版 ONNX？我可以在你還沒好之前用 mock JSON 把 UI 先跑通。</li>
+  <li>VLM 決定用 GPT-4o 還是 Claude？還是讓我測試後決定？（D-03）</li>
+</ul>
+
+<!-- RISKS -->
+<div class="sec-label">你這邊需要注意的風險</div>
+<table class="rtable">
+  <thead>
+    <tr><th>風險</th><th>機率</th><th>影響</th><th>你的應對</th></tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Flutter 沒有可用的 MediaPipe 套件，整個架構要改</td>
+      <td class="risk-h">高</td>
+      <td class="risk-h">高</td>
+      <td>今天討論 A 的結果決定架構，先知道再開始開發，不要等到開發中途</td>
+    </tr>
+    <tr>
+      <td>tflite_flutter 整合出問題</td>
+      <td class="risk-m">中</td>
+      <td class="risk-m">中</td>
+      <td>MVP 階段先走 FastAPI 雲端，手機端推理是 V1.1 再考慮，不影響 MVP 進度</td>
+    </tr>
+    <tr>
+      <td>Frame rate 達不到 20fps</td>
+      <td class="risk-m">中</td>
+      <td class="risk-m">中</td>
+      <td>CustomPainter 渲染和 API call 要跑在不同 isolate，避免 UI 卡住</td>
+    </tr>
+    <tr>
+      <td>你不熟 Flutter，學習曲線拖慢進度</td>
+      <td class="risk-m">中</td>
+      <td class="risk-l">低</td>
+      <td>Dart 語法接近 C#，先做相機畫面這個小目標，建立信心再往下走</td>
+    </tr>
+  </tbody>
+</table>
+
+<!-- NEXT STEPS -->
+<div class="sec-label">會議後你的建議開發順序</div>
+<div class="steps-list">
+  <div class="step-item">
+    <span class="step-num">01</span>
+    <div class="step-body">
+      <div class="step-title">裝好 Flutter 環境，跑出相機畫面</div>
+      <div class="step-desc">Flutter SDK + Android Studio + VS Code。能看到相機畫面就算第一個里程碑，後面都是往上疊。</div>
+    </div>
+  </div>
+  <div class="step-item">
+    <span class="step-num">02</span>
+    <div class="step-body">
+      <div class="step-title">架起 FastAPI，開 /infer endpoint 回傳假 JSON</div>
+      <div class="step-desc">你有 C# ASP.NET 和 Express 背景，FastAPI 半天上手。先回傳假資料，不等朋友的 model。</div>
+    </div>
+  </div>
+  <div class="step-item">
+    <span class="step-num">03</span>
+    <div class="step-body">
+      <div class="step-title">Flutter 串 API，用假 JSON 把 overlay 跑通</div>
+      <div class="step-desc">CustomPainter 接收假的 nodes 和 node_status，畫出骨架和顏色。UI 邏輯驗證完畢後，換成真實 API 只需改 URL。</div>
+    </div>
+  </div>
+  <div class="step-item">
+    <span class="step-num">04</span>
+    <div class="step-body">
+      <div class="step-title">朋友交付 ONNX 後，替換假資料為真實 model</div>
+      <div class="step-desc">FastAPI 載入 ONNX，接收座標跑真實推理。端對端測試 frame rate 是否達標。</div>
+    </div>
+  </div>
+  <div class="step-item">
+    <span class="step-num">05</span>
+    <div class="step-body">
+      <div class="step-title">加入 VLM 串接、限流、Progress screen</div>
+      <div class="step-desc">錯誤超過 3 秒觸發 VLM API，加上 rate limiter（max 2 calls/min），$50 預算監控。Progress screen 串 SQLite。</div>
+    </div>
+  </div>
+</div>
+
+<div class="footer">
+  <span>F Chord Coach · 會議準備報告 v1.0</span>
+  <span>前後端負責人參考</span>
+  <span>討論 A → B → C，依序確認</span>
+</div>
+
+</body>
+</html>
