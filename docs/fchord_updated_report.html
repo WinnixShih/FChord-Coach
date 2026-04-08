@@ -1,0 +1,582 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>F Chord Coach — 更新版專案報告</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap');
+
+:root {
+  --bg:#0c0c0c;--bg2:#141414;--bg3:#1c1c1c;--bg4:#242424;
+  --border:rgba(255,255,255,0.07);--border2:rgba(255,255,255,0.12);
+  --text:#e6e4de;--muted:#555;--muted2:#888;
+  --fe:#8B82E8;--fe-bg:rgba(139,130,232,0.10);--fe-border:rgba(139,130,232,0.25);
+  --dev:#1D9E75;--dev-bg:rgba(29,158,117,0.10);--dev-border:rgba(29,158,117,0.25);
+  --sync:#C88B20;--sync-bg:rgba(200,139,32,0.10);--sync-border:rgba(200,139,32,0.25);
+  --danger:#E24B4A;--danger-bg:rgba(226,75,74,0.10);--danger-border:rgba(226,75,74,0.25);
+  --mono:'IBM Plex Mono',monospace;--sans:'IBM Plex Sans',sans-serif;--rad:8px;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:var(--sans);font-size:14px;line-height:1.65;padding:3rem 2.5rem 5rem;max-width:1020px;margin:0 auto}
+.header{padding:2.5rem 0;margin-bottom:.5rem;border-bottom:1px solid var(--border)}
+.eyebrow{font-family:var(--mono);font-size:11px;color:var(--sync);letter-spacing:.1em;text-transform:uppercase;margin-bottom:.75rem}
+h1{font-size:2.1rem;font-weight:300;letter-spacing:-.035em;margin-bottom:.5rem;line-height:1.2}
+h1 strong{font-weight:600}
+.header-desc{color:var(--muted2);font-size:13.5px;margin-top:.4rem}
+.header-pills{display:flex;gap:8px;flex-wrap:wrap;margin-top:1.25rem}
+.pill{font-family:var(--mono);font-size:11px;padding:4px 12px;border-radius:100px;border:1px solid var(--border2);color:var(--muted2);background:var(--bg2)}
+.sec-label{font-family:var(--mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin:3.5rem 0 1.25rem;padding-bottom:.6rem;border-bottom:1px solid var(--border)}
+
+/* SUMMARY */
+.summary-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
+.sum-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--rad);padding:1.1rem 1.25rem}
+.sum-label{font-family:var(--mono);font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.07em;margin-bottom:8px}
+.sum-title{font-size:14px;font-weight:500;margin-bottom:4px}
+.sum-desc{font-size:12px;color:#666;line-height:1.6}
+
+/* REPO */
+.repo-wrap{background:var(--bg2);border:1px solid var(--border);border-radius:var(--rad);overflow:hidden}
+.repo-head{padding:.75rem 1.25rem;background:var(--bg3);border-bottom:1px solid var(--border);font-family:var(--mono);font-size:11px;color:var(--muted2);display:flex;align-items:center;gap:8px}
+.repo-body{padding:1.25rem;font-family:var(--mono);font-size:12px;line-height:2.2}
+.repo-folder{color:var(--sync);margin-top:.4rem}
+.repo-folder:first-child{margin-top:0}
+.repo-line{display:flex;align-items:center;gap:8px;padding-left:1.25rem}
+.repo-name.fe{color:var(--fe)}
+.repo-name.dev{color:var(--dev)}
+.repo-name.shared{color:var(--muted2)}
+.repo-comment{color:var(--muted);font-size:10.5px}
+.repo-owner{font-size:10px;padding:1px 7px;border-radius:3px;border:1px solid;white-space:nowrap}
+.repo-owner.fe{color:var(--fe);border-color:var(--fe-border);background:var(--fe-bg)}
+.repo-owner.dev{color:var(--dev);border-color:var(--dev-border);background:var(--dev-bg)}
+.repo-owner.shared{color:var(--sync);border-color:var(--sync-border);background:var(--sync-bg)}
+
+/* ROLES */
+.role-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.role-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--rad);overflow:hidden}
+.role-head{padding:.85rem 1.25rem;font-family:var(--mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:8px}
+.role-dot{width:7px;height:7px;border-radius:2px;flex-shrink:0}
+.role-week{padding:.75rem 1.25rem;border-bottom:1px solid var(--border)}
+.role-week:last-child{border-bottom:none}
+.week-tag{font-family:var(--mono);font-size:10px;color:var(--muted);margin-bottom:.5rem}
+.task-list{list-style:none}
+.task-list li{font-size:12.5px;color:#a0a0a0;padding:3px 0 3px 1rem;position:relative;line-height:1.55}
+.task-list li::before{content:"–";position:absolute;left:0;color:var(--muted)}
+.task-list li strong{color:var(--text);font-weight:500}
+.task-list code{font-family:var(--mono);font-size:10.5px;background:var(--bg4);border:1px solid var(--border);padding:1px 5px;border-radius:3px;color:#ccc}
+
+/* FLOW */
+.flow-wrap{background:var(--bg2);border:1px solid var(--border);border-radius:var(--rad);padding:1.5rem;overflow-x:auto}
+
+/* JSON */
+.json-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.json-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--rad);overflow:hidden}
+.json-head{padding:.7rem 1rem;font-family:var(--mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:8px}
+.json-body{padding:1rem 1.25rem;font-family:var(--mono);font-size:11.5px;line-height:2;color:#aaa}
+.json-body .k{color:var(--fe)}
+.json-body .v{color:var(--dev)}
+.json-body .c{color:var(--muted);font-size:10.5px}
+
+/* TABLES */
+.ctable{width:100%;border-collapse:collapse;font-size:12.5px;background:var(--bg2);border:1px solid var(--border);border-radius:var(--rad);overflow:hidden;margin-top:12px}
+.ctable th{font-family:var(--mono);font-size:10px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);text-align:left;padding:.6rem 1rem;background:var(--bg3);border-bottom:1px solid var(--border2)}
+.ctable td{padding:.65rem 1rem;border-bottom:1px solid var(--border);color:#a0a0a0;vertical-align:top;line-height:1.55}
+.ctable tr:last-child td{border-bottom:none}
+.ctable code{font-family:var(--mono);font-size:11px;background:var(--bg4);border:1px solid var(--border);padding:1px 5px;border-radius:3px;color:#ddd}
+.tag-fe{font-family:var(--mono);font-size:10px;color:var(--fe)}
+.tag-dev{font-family:var(--mono);font-size:10px;color:var(--dev)}
+.tag-vlm{font-family:var(--mono);font-size:10px;color:var(--sync)}
+.label-ok{color:var(--dev);font-family:var(--mono);font-size:11px}
+.label-err{color:var(--danger);font-family:var(--mono);font-size:11px}
+
+/* NOTE BARS */
+.note-bar{border-radius:var(--rad);padding:1rem 1.25rem;margin-top:12px;display:flex;gap:1rem}
+.note-bar.sync{background:var(--sync-bg);border:1px solid var(--sync-border)}
+.note-bar.dev{background:var(--dev-bg);border:1px solid var(--dev-border)}
+.note-bar.fe{background:var(--fe-bg);border:1px solid var(--fe-border)}
+.note-tag{font-family:var(--mono);font-size:10px;text-transform:uppercase;letter-spacing:.08em;min-width:70px;padding-top:1px;flex-shrink:0}
+.note-bar.sync .note-tag{color:var(--sync)}
+.note-bar.dev .note-tag{color:var(--dev)}
+.note-bar.fe .note-tag{color:var(--fe)}
+.note-text{font-size:12px;color:#999;line-height:1.6}
+.note-bar.sync .note-text strong{color:var(--sync);font-weight:500}
+.note-bar.dev .note-text strong{color:var(--dev);font-weight:500}
+.note-bar.fe .note-text strong{color:var(--fe);font-weight:500}
+
+/* Q LIST */
+.q-list{display:flex;flex-direction:column;gap:8px}
+.q-item{background:var(--bg2);border:1px solid var(--border);border-radius:var(--rad);padding:.9rem 1.25rem;display:flex;gap:1rem;align-items:flex-start}
+.q-num{font-family:var(--mono);font-size:10px;color:var(--muted);min-width:24px;padding-top:2px;flex-shrink:0}
+.q-body{flex:1}
+.q-title{font-size:13.5px;font-weight:500;margin-bottom:3px}
+.q-desc{font-size:12px;color:#777;line-height:1.6}
+.q-badge{font-family:var(--mono);font-size:10px;padding:3px 9px;border-radius:4px;border:1px solid;align-self:flex-start;white-space:nowrap;flex-shrink:0}
+.badge-sync{color:var(--sync);border-color:var(--sync-border);background:var(--sync-bg)}
+.badge-fe{color:var(--fe);border-color:var(--fe-border);background:var(--fe-bg)}
+.badge-dev{color:var(--dev);border-color:var(--dev-border);background:var(--dev-bg)}
+
+/* STEPS */
+.steps-list{display:flex;flex-direction:column;gap:8px}
+.step-item{background:var(--bg2);border:1px solid var(--border);border-radius:var(--rad);padding:.9rem 1.25rem;display:flex;gap:1rem;align-items:flex-start}
+.step-num{font-family:var(--mono);font-size:10px;color:var(--muted);min-width:24px;padding-top:2px}
+.step-body{flex:1}
+.step-title{font-size:13.5px;font-weight:500;margin-bottom:3px}
+.step-desc{font-size:12px;color:#777;line-height:1.6}
+.step-desc code{font-family:var(--mono);font-size:10.5px;background:var(--bg4);border:1px solid var(--border);padding:1px 5px;border-radius:3px;color:#ccc}
+
+.footer{margin-top:4rem;padding-top:1.25rem;border-top:1px solid var(--border);font-family:var(--mono);font-size:11px;color:var(--muted);display:flex;justify-content:space-between;flex-wrap:wrap;gap:6px}
+
+@media(max-width:680px){
+  body{padding:2rem 1.25rem 4rem}h1{font-size:1.6rem}
+  .summary-grid{grid-template-columns:1fr}.role-grid{grid-template-columns:1fr}.json-grid{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="eyebrow">F Chord Coach · 更新版專案報告 v3.0</div>
+  <h1>分工確認 <strong>討論結論</strong></h1>
+  <p class="header-desc">你負責前端 + 後端 · 朋友負責 AI 模型 · 同一個 GitHub Repo 管理</p>
+  <div class="header-pills">
+    <span class="pill">分工最終版</span>
+    <span class="pill">Repo 結構</span>
+    <span class="pill">JSON Schema</span>
+    <span class="pill">資料流釐清</span>
+    <span class="pill">待確認問題</span>
+    <span class="pill">開發順序</span>
+  </div>
+</div>
+
+<!-- 已確認事項 -->
+<div class="sec-label">已確認事項</div>
+<div class="summary-grid">
+  <div class="sum-card">
+    <div class="sum-label">你負責</div>
+    <div class="sum-title" style="color:var(--fe)">前端 + 後端</div>
+    <div class="sum-desc">Flutter App、FastAPI 後端、VLM API 串接、SQLite 本地儲存、hand_detection 整合</div>
+  </div>
+  <div class="sum-card">
+    <div class="sum-label">朋友負責</div>
+    <div class="sum-title" style="color:var(--dev)">AI 模型</div>
+    <div class="sum-desc">資料蒐集與標記、GraphSAGE GNN 訓練、模型評估、ONNX 匯出交付，放進 backend/models/</div>
+  </div>
+  <div class="sum-card">
+    <div class="sum-label">Git 管理</div>
+    <div class="sum-title" style="color:var(--sync)">同一個 Repo</div>
+    <div class="sum-desc">前後端 + AI 放同一個 GitHub Repo，用三個資料夾區分，docs/ 資料夾存放所有報告文件</div>
+  </div>
+</div>
+
+<!-- REPO 結構 -->
+<div class="sec-label">GitHub Repo 結構</div>
+<div class="repo-wrap">
+  <div class="repo-head">
+    <span style="color:var(--sync)">◆</span> fchord-coach / (root)
+  </div>
+  <div class="repo-body">
+    <div class="repo-folder">📁 flutter/</div>
+    <div class="repo-line"><span class="repo-name fe">lib/</span><span class="repo-owner fe">你</span><span class="repo-comment">— Flutter App 主程式（畫面、CustomPainter、hand_detection）</span></div>
+    <div class="repo-line"><span class="repo-name fe">pubspec.yaml</span><span class="repo-owner fe">你</span><span class="repo-comment">— 套件依賴 camera, hand_detection, dio, riverpod, sqflite</span></div>
+    <div class="repo-line"><span class="repo-name fe">android/</span><span class="repo-owner fe">你</span></div>
+    <div class="repo-line"><span class="repo-name fe">ios/</span><span class="repo-owner fe">你</span><span class="repo-comment">— Beta 前借 Mac 編譯</span></div>
+
+    <div class="repo-folder">📁 backend/</div>
+    <div class="repo-line"><span class="repo-name fe">main.py</span><span class="repo-owner fe">你</span><span class="repo-comment">— FastAPI 主程式，/infer endpoint</span></div>
+    <div class="repo-line"><span class="repo-name fe">vlm.py</span><span class="repo-owner fe">你</span><span class="repo-comment">— VLM API 串接 + rate limiter（max 2 calls/min）</span></div>
+    <div class="repo-line"><span class="repo-name fe">requirements.txt</span><span class="repo-owner fe">你</span></div>
+    <div class="repo-line"><span class="repo-name fe">models/</span><span class="repo-owner fe">你</span><span class="repo-comment">— 放朋友交付的 fchord.onnx（可加入 .gitignore）</span></div>
+
+    <div class="repo-folder">📁 ai/</div>
+    <div class="repo-line"><span class="repo-name dev">data_collection.py</span><span class="repo-owner dev">朋友</span><span class="repo-comment">— 資料蒐集與標記 script</span></div>
+    <div class="repo-line"><span class="repo-name dev">fchord_qc.py</span><span class="repo-owner dev">朋友</span><span class="repo-comment">— 資料品質檢查</span></div>
+    <div class="repo-line"><span class="repo-name dev">train.py</span><span class="repo-owner dev">朋友</span><span class="repo-comment">— GraphSAGE GNN 訓練</span></div>
+    <div class="repo-line"><span class="repo-name dev">export_onnx.py</span><span class="repo-owner dev">朋友</span><span class="repo-comment">— 匯出 fchord.onnx → 放進 backend/models/</span></div>
+    <div class="repo-line"><span class="repo-name dev">data/</span><span class="repo-owner dev">朋友</span><span class="repo-comment">— 訓練資料，建議加入 .gitignore（資料量大）</span></div>
+
+    <div class="repo-folder">📁 docs/</div>
+    <div class="repo-line"><span class="repo-name shared">fchord_sprint_plan.html</span><span class="repo-owner shared">共用</span><span class="repo-comment">— 原始 W1–W8 Sprint 計畫</span></div>
+    <div class="repo-line"><span class="repo-name shared">fchord_meeting_report.html</span><span class="repo-owner shared">共用</span><span class="repo-comment">— 第一次會議準備報告</span></div>
+    <div class="repo-line"><span class="repo-name shared">fchord_updated_report.html</span><span class="repo-owner shared">共用</span><span class="repo-comment">— 本文件，最新討論結論</span></div>
+
+    <div style="margin-top:.5rem">
+      <div class="repo-line"><span class="repo-name shared">README.md</span><span class="repo-owner shared">共用</span><span class="repo-comment">— 專案說明、環境安裝、分工說明</span></div>
+      <div class="repo-line"><span class="repo-name shared">.gitignore</span><span class="repo-owner shared">共用</span><span class="repo-comment">— 排除 data/、__pycache__/、.env、node_modules/</span></div>
+    </div>
+  </div>
+</div>
+<div class="note-bar sync">
+  <span class="note-tag">Git 流程</span>
+  <span class="note-text">朋友訓練完後把 <strong>fchord.onnx</strong> commit 到 <strong>backend/models/</strong>，你的 FastAPI 就能直接載入，不需要另外傳檔案。訓練用原始資料（ai/data/）體積大，建議加入 .gitignore。</span>
+</div>
+
+<!-- 分工 -->
+<div class="sec-label">最終分工一覽</div>
+<div class="role-grid">
+  <div class="role-card">
+    <div class="role-head">
+      <div class="role-dot" style="background:var(--fe)"></div>
+      <span style="color:var(--fe)">你負責 — Flutter 前端 + FastAPI 後端</span>
+    </div>
+    <div class="role-week">
+      <div class="week-tag">W1 – W2 · flutter/ + backend/</div>
+      <ul class="task-list">
+        <li>Flutter 環境建置（Android 模擬器）</li>
+        <li>相機全螢幕畫面 + CustomPainter 研究</li>
+        <li>設計系統（色票、字體）、低保真 Wireframe</li>
+        <li>FastAPI 起好，<code>/infer</code> 先回傳假 JSON</li>
+      </ul>
+    </div>
+    <div class="role-week">
+      <div class="week-tag">W3 – W4 · flutter/</div>
+      <ul class="task-list">
+        <li>骨架 overlay（綠/紅節點、即時切換動畫）</li>
+        <li>Ghost overlay（黃色虛線目標骨架）</li>
+        <li>Feedback card 動畫、Progress screen</li>
+        <li><strong>Mock JSON 把整個 UI 跑通，不等模型</strong></li>
+      </ul>
+    </div>
+    <div class="role-week">
+      <div class="week-tag">W5 – W6 · flutter/ + backend/</div>
+      <ul class="task-list">
+        <li>FastAPI 載入 <code>fchord.onnx</code> 跑真實推理</li>
+        <li>VLM API 串接（GPT-4o 或 Claude）+ rate limiter</li>
+        <li>Flutter 換成真實 API（替換 Mock JSON）</li>
+        <li>SQLite 本地儲存 + VLM suggestion 非同步顯示</li>
+      </ul>
+    </div>
+    <div class="role-week">
+      <div class="week-tag">W7 – W8 · flutter/</div>
+      <ul class="task-list">
+        <li>Onboarding 引導流程</li>
+        <li>色盲模式（紅綠 → 橘藍）</li>
+        <li>效能優化（確保 60fps UI）</li>
+        <li>Beta 發布（借 Mac 跑 <code>flutter build ios</code>，上 TestFlight）</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="role-card">
+    <div class="role-head">
+      <div class="role-dot" style="background:var(--dev)"></div>
+      <span style="color:var(--dev)">朋友負責 — AI 模型</span>
+    </div>
+    <div class="role-week">
+      <div class="week-tag">W1 – W2 · ai/</div>
+      <ul class="task-list">
+        <li>Python 環境建置（MediaPipe + PyTorch Geometric）</li>
+        <li>21 個關節座標擷取與視覺化確認</li>
+        <li><code>data_collection.py</code> Labeling script 建置</li>
+        <li><strong>確認 label 完整清單給你（W2 必須）</strong></li>
+      </ul>
+    </div>
+    <div class="role-week">
+      <div class="week-tag">W3 – W4 · ai/</div>
+      <ul class="task-list">
+        <li>資料蒐集完成（~900 筆，3–5 位錄製者）</li>
+        <li><code>fchord_qc.py</code> 篩選不合格樣本</li>
+        <li>GraphSAGE GNN 訓練（目標 &gt;85% 準確率）</li>
+        <li>ONNX 匯出，把 <code>fchord.onnx</code> commit 到 <code>backend/models/</code></li>
+      </ul>
+    </div>
+    <div class="role-week">
+      <div class="week-tag">W5 – W6 · ai/</div>
+      <ul class="task-list">
+        <li>協助你確認 ONNX 輸入輸出格式（tensor shape）</li>
+        <li>推理速度確認（目標 &lt;30ms/frame）</li>
+        <li>VLM 中文建議品質人工評估（各測 10 筆）</li>
+      </ul>
+    </div>
+    <div class="role-week">
+      <div class="week-tag">W7 – W8 · ai/</div>
+      <ul class="task-list">
+        <li>根據 Beta 反饋補充邊緣案例、重新訓練</li>
+        <li>閾值調校（根據真實用戶手型調整）</li>
+        <li>Model card 技術文件</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- 資料流 -->
+<div class="sec-label">資料流（討論 A 已解決）</div>
+<div class="flow-wrap">
+<svg viewBox="0 0 940 155" width="100%" xmlns="http://www.w3.org/2000/svg" style="font-family:'IBM Plex Sans',sans-serif;max-width:940px">
+<defs>
+  <marker id="arr" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+    <path d="M2 1L8 5L2 9" fill="none" stroke="context-stroke" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+  </marker>
+</defs>
+<rect x="20" y="30" width="168" height="84" rx="8" fill="rgba(139,130,232,0.12)" stroke="rgba(139,130,232,0.35)" stroke-width="1"/>
+<text x="104" y="60" font-size="12.5" fill="#c8c4f2" text-anchor="middle" font-weight="500">手機相機</text>
+<text x="104" y="78" font-size="10" fill="#8B82E8" text-anchor="middle">hand_detection 套件</text>
+<text x="104" y="95" font-size="10" fill="#8B82E8" text-anchor="middle">iOS + Android ✅</text>
+<text x="104" y="128" font-size="9" fill="#8B82E8" text-anchor="middle" font-family="'IBM Plex Mono',monospace">flutter/ · 你</text>
+
+<line x1="188" y1="72" x2="235" y2="72" stroke="#555" stroke-width="1.5" marker-end="url(#arr)"/>
+<text x="211" y="62" font-size="9" fill="#555" font-family="'IBM Plex Mono',monospace" text-anchor="middle">21 個座標</text>
+
+<rect x="235" y="30" width="188" height="84" rx="8" fill="rgba(139,130,232,0.12)" stroke="rgba(139,130,232,0.35)" stroke-width="1"/>
+<text x="329" y="60" font-size="12.5" fill="#c8c4f2" text-anchor="middle" font-weight="500">Flutter App</text>
+<text x="329" y="78" font-size="10" fill="#8B82E8" text-anchor="middle">座標換算 → CustomPainter</text>
+<text x="329" y="95" font-size="10" fill="#8B82E8" text-anchor="middle">骨架 overlay 渲染</text>
+<text x="329" y="128" font-size="9" fill="#8B82E8" text-anchor="middle" font-family="'IBM Plex Mono',monospace">flutter/ · 你</text>
+
+<line x1="423" y1="72" x2="470" y2="72" stroke="#555" stroke-width="1.5" marker-end="url(#arr)"/>
+<text x="446" y="62" font-size="9" fill="#555" font-family="'IBM Plex Mono',monospace" text-anchor="middle">nodes JSON</text>
+
+<rect x="470" y="30" width="200" height="84" rx="8" fill="rgba(29,158,117,0.12)" stroke="rgba(29,158,117,0.35)" stroke-width="1"/>
+<text x="570" y="60" font-size="12.5" fill="#8de0c0" text-anchor="middle" font-weight="500">FastAPI Server</text>
+<text x="570" y="78" font-size="10" fill="#1D9E75" text-anchor="middle">載入 fchord.onnx 推理</text>
+<text x="570" y="95" font-size="10" fill="#1D9E75" text-anchor="middle">VLM 觸發與限流</text>
+<text x="570" y="128" font-size="9" fill="#1D9E75" text-anchor="middle" font-family="'IBM Plex Mono',monospace">backend/ · 你</text>
+
+<line x1="670" y1="72" x2="717" y2="72" stroke="#555" stroke-width="1.5" marker-end="url(#arr)"/>
+<text x="693" y="62" font-size="9" fill="#555" font-family="'IBM Plex Mono',monospace" text-anchor="middle">結果 JSON</text>
+
+<rect x="717" y="30" width="203" height="84" rx="8" fill="rgba(139,130,232,0.12)" stroke="rgba(139,130,232,0.35)" stroke-width="1"/>
+<text x="818" y="60" font-size="12.5" fill="#c8c4f2" text-anchor="middle" font-weight="500">Flutter 顯示結果</text>
+<text x="818" y="78" font-size="10" fill="#8B82E8" text-anchor="middle">骨架顏色、Feedback card</text>
+<text x="818" y="95" font-size="10" fill="#8B82E8" text-anchor="middle">Progress screen</text>
+<text x="818" y="128" font-size="9" fill="#8B82E8" text-anchor="middle" font-family="'IBM Plex Mono',monospace">flutter/ · 你</text>
+</svg>
+</div>
+<div class="note-bar dev">
+  <span class="note-tag">已確認</span>
+  <span class="note-text">MediaPipe 用 <strong>hand_detection 套件直接在手機上跑</strong>（iOS + Android 都支援），不需傳圖片給 Server，延遲最低。朋友的模型以 <strong>fchord.onnx</strong> 交付，commit 到 backend/models/，你的 FastAPI 載入。</span>
+</div>
+
+<!-- JSON SCHEMA -->
+<div class="sec-label">JSON Schema — 介面契約</div>
+<div class="json-grid">
+  <div class="json-card">
+    <div class="json-head">
+      <div class="role-dot" style="background:var(--fe)"></div>
+      <span style="color:var(--fe)">Flutter 傳給 FastAPI（Input）</span>
+    </div>
+    <div class="json-body">
+      {<br>
+      &nbsp;&nbsp;<span class="k">"nodes"</span>: <span class="v">float[21][3]</span> <span class="c">// 21 個關節 [x,y,z] 0–1</span><br>
+      }
+    </div>
+  </div>
+  <div class="json-card">
+    <div class="json-head">
+      <div class="role-dot" style="background:var(--dev)"></div>
+      <span style="color:var(--dev)">FastAPI 回傳給 Flutter（Output）</span>
+    </div>
+    <div class="json-body">
+      {<br>
+      &nbsp;&nbsp;<span class="k">"label"</span>: <span class="v">string</span><span class="c"> // GNN 分類結果</span><br>
+      &nbsp;&nbsp;<span class="k">"confidence"</span>: <span class="v">float</span><span class="c"> // 信心度 0–1</span><br>
+      &nbsp;&nbsp;<span class="k">"node_status"</span>: <span class="v">int[21]</span><span class="c"> // 0=ok 1=warn 2=err</span><br>
+      &nbsp;&nbsp;<span class="k">"ghost_nodes"</span>: <span class="v">float[21][2]</span><span class="c"> // 只傳一次，你快取</span><br>
+      &nbsp;&nbsp;<span class="k">"error_duration_ms"</span>: <span class="v">int</span><span class="c"> // 連續錯誤毫秒數</span><br>
+      &nbsp;&nbsp;<span class="k">"suggestion"</span>: <span class="v">string | null</span><span class="c"> // VLM 中文建議</span><br>
+      &nbsp;&nbsp;<span class="k">"frame_ms"</span>: <span class="v">int</span><span class="c"> // 推理耗時 debug 用</span><br>
+      }
+    </div>
+  </div>
+</div>
+
+<table class="ctable">
+  <thead><tr><th>欄位</th><th>說明</th><th>更新頻率</th><th>產生者</th></tr></thead>
+  <tbody>
+    <tr><td><code>nodes</code></td><td>hand_detection 拿到的 21 個關節座標，normalized 0–1。你的 CustomPainter 乘以螢幕寬高換成像素後畫在相機畫面上</td><td>每幀更新</td><td class="tag-fe">Flutter（你）</td></tr>
+    <tr><td><code>node_status</code></td><td>每個關節狀態，0=正確（綠）、1=警告（橘）、2=錯誤（紅）。你根據這個決定 CustomPainter 節點顏色</td><td>每幀更新</td><td class="tag-dev">GNN 模型（朋友）</td></tr>
+    <tr><td><code>label</code></td><td>GNN 判斷目前屬於哪種錯誤類型。你的 Flutter UI 根據這個值顯示對應中文提示，需要朋友提供完整清單</td><td>每幀更新</td><td class="tag-dev">GNN 模型（朋友）</td></tr>
+    <tr><td><code>confidence</code></td><td>GNN 對分類的信心度。可設門檻（如 &lt;0.6 不顯示錯誤提示），或只在 debug 模式顯示</td><td>每幀更新</td><td class="tag-dev">GNN 模型（朋友）</td></tr>
+    <tr><td><code>ghost_nodes</code></td><td>F chord 正確骨架的目標位置（標準答案），固定不動。只在第一次回傳，Flutter 快取後用 CustomPainter 畫成黃色虛線疊在真實骨架上</td><td>只傳一次，Flutter 快取</td><td class="tag-dev">GNN 模型（朋友）</td></tr>
+    <tr><td><code>error_duration_ms</code></td><td>連續錯誤持續幾毫秒。你在 FastAPI 計時，Flutter 可顯示計時器，超過 3000ms 代表 VLM 即將觸發</td><td>每幀更新</td><td class="tag-fe">FastAPI（你）</td></tr>
+    <tr><td><code>suggestion</code></td><td>VLM 看完截圖後的中文建議，平常是 null，錯誤超過 3 秒才觸發非同步回傳。你的 FastAPI 負責呼叫 VLM 並限流，Flutter 顯示在 Feedback Card</td><td>觸發才更新（非同步）</td><td class="tag-vlm">VLM API（你串接）</td></tr>
+    <tr><td><code>frame_ms</code></td><td>這幀推理耗時毫秒，你在 FastAPI 計時後回傳，Flutter debug 模式顯示，確認是否達到 &lt;30ms 目標</td><td>每幀更新</td><td class="tag-fe">FastAPI（你）</td></tr>
+  </tbody>
+</table>
+
+<!-- LABEL -->
+<div class="sec-label">Label 清單（待朋友 W2 前最終確認）</div>
+<table class="ctable">
+  <thead><tr><th>Label 值</th><th>意思</th><th>Flutter UI 顯示的中文提示</th></tr></thead>
+  <tbody>
+    <tr><td><code>correct</code></td><td class="label-ok">姿勢正確</td><td>✅ 姿勢正確！繼續保持</td></tr>
+    <tr><td><code>err_index_low</code></td><td class="label-err">食指位置太低</td><td>食指需要往上移到第一格正中間</td></tr>
+    <tr><td><code>err_index_high</code></td><td class="label-err">食指位置太高</td><td>食指位置太高，往下移一點</td></tr>
+    <tr><td><code>err_middle_mute</code></td><td class="label-err">中指悶到其他弦</td><td>中指碰到旁邊的弦，稍微抬高指尖</td></tr>
+    <tr><td><code>err_ring_mute</code></td><td class="label-err">無名指悶到其他弦</td><td>無名指碰到旁邊的弦，調整角度</td></tr>
+    <tr><td><code>err_thumb_wrong</code></td><td class="label-err">大拇指位置不對</td><td>大拇指移到琴頸正後方</td></tr>
+  </tbody>
+</table>
+<div class="note-bar sync">
+  <span class="note-tag">待確認</span>
+  <span class="note-text">清單為預估值，<strong>最終由朋友訓練資料的分類類別決定</strong>。W2 前確認完整清單後，你才能在 Flutter 把所有中文對應文字寫好。</span>
+</div>
+
+<!-- Ghost Nodes -->
+<div class="sec-label">Ghost Nodes vs Nodes 差異</div>
+<div class="flow-wrap">
+<svg viewBox="0 0 940 120" width="100%" xmlns="http://www.w3.org/2000/svg" style="font-family:'IBM Plex Sans',sans-serif;max-width:940px">
+<defs>
+  <marker id="arr2" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+    <path d="M2 1L8 5L2 9" fill="none" stroke="context-stroke" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+  </marker>
+</defs>
+<rect x="20" y="18" width="260" height="72" rx="8" fill="rgba(200,139,32,0.10)" stroke="rgba(200,139,32,0.30)" stroke-width="1" stroke-dasharray="5 3"/>
+<text x="150" y="46" font-size="12.5" fill="#f0c060" text-anchor="middle" font-weight="500">ghost_nodes（黃色虛線）</text>
+<text x="150" y="64" font-size="10" fill="#C88B20" text-anchor="middle">F chord 標準答案，固定不動</text>
+<text x="150" y="80" font-size="10" fill="#C88B20" text-anchor="middle">只傳一次，Flutter 快取</text>
+
+<rect x="360" y="18" width="260" height="72" rx="8" fill="rgba(29,158,117,0.10)" stroke="rgba(29,158,117,0.30)" stroke-width="1"/>
+<text x="490" y="46" font-size="12.5" fill="#8de0c0" text-anchor="middle" font-weight="500">nodes（綠/紅骨架）</text>
+<text x="490" y="64" font-size="10" fill="#1D9E75" text-anchor="middle">你的手的即時位置</text>
+<text x="490" y="80" font-size="10" fill="#1D9E75" text-anchor="middle">每幀更新，跟著手移動</text>
+
+<rect x="700" y="18" width="220" height="72" rx="8" fill="rgba(139,130,232,0.10)" stroke="rgba(139,130,232,0.30)" stroke-width="1"/>
+<text x="810" y="46" font-size="12.5" fill="#c8c4f2" text-anchor="middle" font-weight="500">畫面疊加結果</text>
+<text x="810" y="64" font-size="10" fill="#8B82E8" text-anchor="middle">兩層骨架同時顯示</text>
+<text x="810" y="80" font-size="10" fill="#8B82E8" text-anchor="middle">差距越大 = 按越錯</text>
+
+<line x1="280" y1="54" x2="358" y2="54" stroke="#888" stroke-width="1.5" marker-end="url(#arr2)"/>
+<text x="319" y="44" font-size="9" fill="#555" font-family="'IBM Plex Mono',monospace" text-anchor="middle">比較</text>
+<line x1="620" y1="54" x2="698" y2="54" stroke="#888" stroke-width="1.5" marker-end="url(#arr2)"/>
+<text x="659" y="44" font-size="9" fill="#555" font-family="'IBM Plex Mono',monospace" text-anchor="middle">疊加</text>
+</svg>
+</div>
+
+<!-- VLM -->
+<div class="sec-label">VLM Suggestion 觸發流程</div>
+<div class="flow-wrap">
+<svg viewBox="0 0 940 96" width="100%" xmlns="http://www.w3.org/2000/svg" style="font-family:'IBM Plex Sans',sans-serif;max-width:940px">
+<defs>
+  <marker id="arr3" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+    <path d="M2 1L8 5L2 9" fill="none" stroke="context-stroke" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+  </marker>
+</defs>
+<rect x="20" y="22" width="172" height="50" rx="7" fill="rgba(226,75,74,0.10)" stroke="rgba(226,75,74,0.30)" stroke-width="1"/>
+<text x="106" y="45" font-size="12" fill="#f08080" text-anchor="middle" font-weight="500">按錯超過 3 秒</text>
+<text x="106" y="62" font-size="10" fill="#E24B4A" text-anchor="middle">error_duration_ms &gt; 3000</text>
+<line x1="192" y1="47" x2="232" y2="47" stroke="#C88B20" stroke-width="1.5" stroke-dasharray="4 3" marker-end="url(#arr3)"/>
+<rect x="232" y="22" width="192" height="50" rx="7" fill="rgba(200,139,32,0.10)" stroke="rgba(200,139,32,0.30)" stroke-width="1"/>
+<text x="328" y="45" font-size="12" fill="#f0c060" text-anchor="middle" font-weight="500">FastAPI 觸發 VLM</text>
+<text x="328" y="62" font-size="10" fill="#C88B20" text-anchor="middle">截圖 + skeleton JSON 傳入</text>
+<line x1="424" y1="47" x2="462" y2="47" stroke="#C88B20" stroke-width="1.5" stroke-dasharray="4 3" marker-end="url(#arr3)"/>
+<rect x="462" y="22" width="210" height="50" rx="7" fill="rgba(200,139,32,0.10)" stroke="rgba(200,139,32,0.30)" stroke-width="1"/>
+<text x="567" y="45" font-size="12" fill="#f0c060" text-anchor="middle" font-weight="500">VLM 回傳中文建議</text>
+<text x="567" y="62" font-size="10" fill="#C88B20" text-anchor="middle">suggestion 非同步填入</text>
+<line x1="672" y1="47" x2="710" y2="47" stroke="#8B82E8" stroke-width="1.5" marker-end="url(#arr3)"/>
+<rect x="710" y="22" width="210" height="50" rx="7" fill="rgba(139,130,232,0.10)" stroke="rgba(139,130,232,0.30)" stroke-width="1"/>
+<text x="815" y="45" font-size="12" fill="#c8c4f2" text-anchor="middle" font-weight="500">Flutter Feedback Card</text>
+<text x="815" y="62" font-size="10" fill="#8B82E8" text-anchor="middle">顯示建議文字給用戶</text>
+</svg>
+</div>
+<div class="note-bar fe">
+  <span class="note-tag">你負責</span>
+  <span class="note-text">VLM 串接、限流（max 2 calls/min）、$50 預算監控都寫在 <strong>backend/vlm.py</strong>。Flutter 只需接收 suggestion 欄位顯示，不需要知道 VLM 細節。</span>
+</div>
+
+<!-- 待確認問題 -->
+<div class="sec-label">W2 前必須跟朋友確認的問題</div>
+<div class="q-list">
+  <div class="q-item">
+    <span class="q-num">Q1</span>
+    <div class="q-body">
+      <div class="q-title">label 完整有哪幾個值？</div>
+      <div class="q-desc">你需要在 Flutter 對應每個 label 值顯示中文提示文字，不知道完整清單就沒辦法寫。上面的清單是預估，需要朋友從訓練資料的分類類別確認最終版本。</div>
+    </div>
+    <span class="q-badge badge-sync">W2 必須確認</span>
+  </div>
+  <div class="q-item">
+    <span class="q-num">Q2</span>
+    <div class="q-body">
+      <div class="q-title">ghost_nodes 是只在第一次回傳，還是 ONNX 沒有這個輸出？</div>
+      <div class="q-desc">ghost_nodes 邏輯上是固定的標準答案，只傳一次就好。但需要確認朋友的 ONNX 輸出是否包含這個欄位，還是你要在 FastAPI 自己 hardcode。</div>
+    </div>
+    <span class="q-badge badge-sync">W2 必須確認</span>
+  </div>
+  <div class="q-item">
+    <span class="q-num">Q3</span>
+    <div class="q-body">
+      <div class="q-title">ONNX 的輸入輸出 tensor 格式？</div>
+      <div class="q-desc">你的 FastAPI 要載入朋友的 fchord.onnx，需要知道輸入 tensor 的 shape 和 dtype，以及輸出欄位的格式，才能正確串接。</div>
+    </div>
+    <span class="q-badge badge-sync">W4 前確認</span>
+  </div>
+  <div class="q-item">
+    <span class="q-num">Q4</span>
+    <div class="q-body">
+      <div class="q-title">朋友什麼時候能把 fchord.onnx commit 到 backend/models/？</div>
+      <div class="q-desc">你 W3–W4 用 Mock JSON 把 UI 跑通，W5 開始需要 FastAPI 載入真實模型。確認朋友的時程，確保 W5 能順利整合。</div>
+    </div>
+    <span class="q-badge badge-dev">W4 前確認</span>
+  </div>
+  <div class="q-item">
+    <span class="q-num">Q5</span>
+    <div class="q-body">
+      <div class="q-title">VLM 決定用 GPT-4o 還是 Claude？</div>
+      <div class="q-desc">各測 10 筆中文建議品質後決定，影響你的 backend/vlm.py 串接方式。可以 W5 再確認，不影響前期開發。</div>
+    </div>
+    <span class="q-badge badge-fe">W5 前確認</span>
+  </div>
+</div>
+
+<!-- 你的開發順序 -->
+<div class="sec-label">你的建議開發順序</div>
+<div class="steps-list">
+  <div class="step-item">
+    <span class="step-num">01</span>
+    <div class="step-body">
+      <div class="step-title">裝好 Flutter 環境，跑出相機全螢幕畫面</div>
+      <div class="step-desc">Flutter SDK + Android Studio + VS Code。Android 模擬器跑通，能看到相機畫面就是第一個里程碑。對應 <code>flutter/</code> 資料夾。</div>
+    </div>
+  </div>
+  <div class="step-item">
+    <span class="step-num">02</span>
+    <div class="step-body">
+      <div class="step-title">FastAPI 建起來，/infer 先回傳假 JSON</div>
+      <div class="step-desc">你有後端背景，FastAPI 半天上手。先讓 <code>/infer</code> 回傳 hardcode 假資料，不等朋友的模型。對應 <code>backend/</code> 資料夾。</div>
+    </div>
+  </div>
+  <div class="step-item">
+    <span class="step-num">03</span>
+    <div class="step-body">
+      <div class="step-title">Flutter 串假 API，CustomPainter 畫骨架 overlay</div>
+      <div class="step-desc">Flutter 打 <code>/infer</code> 拿假 JSON，CustomPainter 畫出綠/紅骨架和黃色虛線 ghost，確認整個 UI 邏輯通了。</div>
+    </div>
+  </div>
+  <div class="step-item">
+    <span class="step-num">04</span>
+    <div class="step-body">
+      <div class="step-title">完成所有 Flutter 畫面（Feedback card、Progress screen）</div>
+      <div class="step-desc">繼續用 Mock JSON，把 Feedback card 動畫、Progress screen、SQLite 儲存全部做好，不等朋友，兩人平行開發。</div>
+    </div>
+  </div>
+  <div class="step-item">
+    <span class="step-num">05</span>
+    <div class="step-body">
+      <div class="step-title">W5：FastAPI 載入 fchord.onnx，替換假資料</div>
+      <div class="step-desc">朋友把 <code>fchord.onnx</code> commit 到 <code>backend/models/</code>，你的 FastAPI 載入後跑真實推理，Flutter 端對端測試 frame rate 和骨架更新。</div>
+    </div>
+  </div>
+  <div class="step-item">
+    <span class="step-num">06</span>
+    <div class="step-body">
+      <div class="step-title">W5：加入 VLM 串接，完成 backend/vlm.py</div>
+      <div class="step-desc">串接 GPT-4o 或 Claude，加上 rate limiter 和 $50 預算監控，Flutter 接收非同步回傳的 suggestion 並顯示在 Feedback Card。</div>
+    </div>
+  </div>
+  <div class="step-item">
+    <span class="step-num">07</span>
+    <div class="step-body">
+      <div class="step-title">W7：借 Mac 編譯 iOS 版，上 TestFlight Beta</div>
+      <div class="step-desc">在 Mac 跑 <code>flutter build ios</code>，上傳 TestFlight，邀請 10 位吉他自學者試用一週，收集留存率和使用反饋，決定 Go / No-go。</div>
+    </div>
+  </div>
+</div>
+
+<div class="footer">
+  <span>F Chord Coach · 更新版專案報告 v3.0</span>
+  <span>你（flutter/ + backend/）↔ 朋友（ai/）· 同一個 GitHub Repo</span>
+  <span>docs/ · 8 weeks · iOS / Android</span>
+</div>
+
+</body>
+</html>
