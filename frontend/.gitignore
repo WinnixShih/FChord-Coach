@@ -4,3 +4,10 @@
 .dart_tool/
 .packages
 build/
+
+# 其他平台（此專案只支援 Android）
+ios/
+linux/
+macos/
+web/
+windows/

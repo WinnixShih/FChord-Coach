@@ -111,8 +111,40 @@ git checkout -b fix/{slug}             # 修復
 - 手部骨架 overlay：`#52B788` 細線 + `#E07A2F` 錯誤關節圈
 - 任何顏色、間距、字型大小偏離 DESIGN.md 者，需明確理由
 
+## 開發環境 Setup（新開發者必讀）
+
+### Frontend（Flutter Android）
+
+```bash
+# 1. 安裝 Flutter 3.x + Android Studio + Android SDK（minSdk 24）
+# 2. clone 後進入 frontend/
+cd frontend
+flutter create . --org com.fchordcoach   # 生成 android/ 原生結構
+flutter pub get
+flutter run                               # 接上 Android 裝置或啟動 emulator
+```
+
+> `android/gradlew`、`local.properties` 被 gitignore，需 `flutter create .` 重新生成。  
+> MediaPipe 模型（`android/app/src/main/assets/hand_landmarker.task`）已 commit，無需另外下載。
+
+### Backend（FastAPI）
+
+```bash
+cd backend
+python -m venv .venv && source .venv/bin/activate
+pip install -r requirements.txt -r requirements-dev.txt
+cp .env.example .env   # 填入 ANTHROPIC_API_KEY 或 OPENAI_API_KEY
+uvicorn main:app --reload
+```
+
+### Android MethodChannel 架構
+
+Flutter 透過 `fchord/mediapipe` MethodChannel 呼叫 Kotlin 端的 MediaPipe HandLandmarker。  
+詳細流程說明見 `docs/mediapipe-flow.md`。
+
 ## 參考文件
 
 - `docs/architecture.md` — 系統架構與資料流
 - `docs/api_schema.md` — API request/response 契約
+- `docs/mediapipe-flow.md` — MediaPipe MethodChannel 整合流程
 - `DESIGN.md` — UI/UX 設計系統（色彩、字型、間距、Layout 規範）
