@@ -8,45 +8,86 @@ Users hold an F chord shape in front of their phone camera. The app analyzes han
 
 The project consists of three main components:
 
-### Frontend (Flutter)
+### Frontend (Flutter / Android)
 
-- Cross-platform mobile app targeting iOS and Android
-- Built with Dart using the Flutter framework
-- Captures camera frames and renders hand skeleton overlays via `CustomPainter`
+- Android mobile app built with Flutter + Dart
+- Captures camera frames via `camera` package
+- Sends frames to Kotlin via MethodChannel → MediaPipe HandLandmarker extracts 21 hand landmarks
 - Communicates with the backend through REST API (`dio`)
-- State management with Riverpod; local persistence with SQLite
+- State management with Riverpod
 
 ### Backend (Python FastAPI)
 
-- Exposes a `/infer` endpoint that accepts hand landmark data and returns analysis results as JSON
+- Exposes a `/infer` endpoint that accepts 21 hand landmark coordinates and returns analysis results
 - Loads a pre-trained GNN model in ONNX format for chord posture classification
 - Integrates with a Vision-Language Model API (GPT-4o or Claude) for generating natural-language suggestions
-- Rate-limited to a maximum of 2 VLM calls per minute
+- Rate-limited to 2 VLM calls per minute
 
 ### AI / ML
 
-- **MediaPipe Hands** — extracts 21 hand joint landmarks (x, y, z) normalized to 0-1
+- **MediaPipe Hands** — on-device extraction of 21 hand joint landmarks (x, y, z normalized to 0–1)
 - **GraphSAGE GNN** (PyTorch Geometric) — classifies F chord posture error types from joint coordinates
-- Model is exported to ONNX format for inference on the backend
+- Model exported to ONNX for backend inference
 
-## Development Environment
+## Getting Started
 
-| Component | Requirement |
-|-----------|-------------|
-| Frontend  | Flutter SDK (stable channel), Dart SDK |
-| Backend   | Python 3.11+, FastAPI, uvicorn |
-| AI / ML   | PyTorch, PyTorch Geometric, MediaPipe, ONNX Runtime |
+### Frontend
+
+**Requirements:** Flutter SDK (stable), Android Studio, Android SDK API 24+, physical Android device or emulator
+
+```bash
+cd frontend
+flutter create . --org com.fchordcoach   # generate Android native structure
+flutter pub get
+flutter run                               # connect an Android device or start emulator
+```
+
+> The MediaPipe model (`hand_landmarker.task`) is already included in the repo. No additional download needed.
+
+### Backend
+
+**Requirements:** Python 3.11+
+
+```bash
+cd backend
+python -m venv .venv && source .venv/bin/activate   # Windows: .venv\Scripts\activate
+pip install -r requirements.txt -r requirements-dev.txt
+cp .env.example .env    # fill in ANTHROPIC_API_KEY or OPENAI_API_KEY
+uvicorn main:app --reload
+```
+
+Run tests:
+
+```bash
+pytest
+```
 
 ## Project Structure
 
 ```
 fchord-coach/
 ├── README.md
-├── .gitignore
-├── frontend/          # Flutter mobile app
-├── backend/           # FastAPI inference server
-├── ai/                # ML training, evaluation, and model export
+├── DESIGN.md              # UI/UX design system (Clinical Calm)
+├── frontend/              # Flutter Android app
+│   ├── lib/
+│   │   ├── features/      # camera, feedback pages
+│   │   ├── providers/     # Riverpod state
+│   │   └── services/      # API client, MediaPipe channel
+│   └── android/           # Android native (Kotlin MethodChannel)
+├── backend/               # FastAPI inference server
+│   └── app/
+│       ├── routers/       # /infer endpoint
+│       └── services/      # GNNService, VLMService
+├── ai/                    # ML training and ONNX export
 └── docs/
-    ├── api_schema.md      # API request/response contract
-    └── architecture.md    # System architecture details
+    ├── api_schema.md      # API contract
+    ├── architecture.md    # System architecture
+    └── mediapipe-flow.md  # MediaPipe MethodChannel integration guide
 ```
+
+## References
+
+- [API Schema](docs/api_schema.md)
+- [Architecture](docs/architecture.md)
+- [MediaPipe Flow](docs/mediapipe-flow.md)
+- [Design System](DESIGN.md)
