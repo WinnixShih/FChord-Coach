@@ -23,6 +23,7 @@ class _CameraPageState extends ConsumerState<CameraPage>
   bool _isInitialized = false;
   bool _isAnalyzing = false;
   Timer? _analysisTimer;
+  // ignore: unused_field — BL-004 HandSkeletonPainter 會讀取此值
   List<Map<String, double>>? _lastLandmarks;
 
   @override
@@ -174,7 +175,7 @@ class _FeedbackBottomSheet extends StatelessWidget {
         borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.12),
+            color: Colors.black.withValues(alpha: 0.12),
             blurRadius: 24,
             offset: const Offset(0, -4),
           ),
