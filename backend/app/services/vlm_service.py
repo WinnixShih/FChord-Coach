@@ -20,7 +20,7 @@ class VLMService:
         self._provider = os.getenv("VLM_PROVIDER", "anthropic")
 
     async def suggest(self, error_type: str, landmarks) -> str:
-        if not self._can_call():
+        if not self._api_key or not self._can_call():
             return _FALLBACK
         _call_times.append(time.time())
         return await self._call_vlm(error_type)

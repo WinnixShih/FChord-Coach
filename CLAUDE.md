@@ -115,4 +115,5 @@ git checkout -b fix/{slug}             # 修復
 
 - `docs/architecture.md` — 系統架構與資料流
 - `docs/api_schema.md` — API request/response 契約
+- `docs/mediapipe-flow.md` — MediaPipe MethodChannel 整合流程
 - `DESIGN.md` — UI/UX 設計系統（色彩、字型、間距、Layout 規範）
