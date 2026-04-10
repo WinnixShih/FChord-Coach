@@ -101,7 +101,18 @@ git checkout -b fix/{slug}             # 修復
 - **重複出錯：** 若同一類錯誤發生超過三次，將錯誤原因與正確做法記錄到本文件的對應段落，避免再次踩坑
 - **架構異動：** 技術棧、目錄結構、API 契約、分支規範有任何重要變更，同步更新本文件，保持與實際狀態一致
 
+## Design System
+
+**所有前端 UI 決策必須先讀 `DESIGN.md`。**
+
+- 美學：Clinical Calm（暖奶油底色、深森林綠 accent、琥珀橙 error）
+- 字型：Plus Jakarta Sans（UI）+ Geist Mono（數字）
+- CameraPage 使用 Bottom Sheet 回饋，不跳頁
+- 手部骨架 overlay：`#52B788` 細線 + `#E07A2F` 錯誤關節圈
+- 任何顏色、間距、字型大小偏離 DESIGN.md 者，需明確理由
+
 ## 參考文件
 
 - `docs/architecture.md` — 系統架構與資料流
 - `docs/api_schema.md` — API request/response 契約
+- `DESIGN.md` — UI/UX 設計系統（色彩、字型、間距、Layout 規範）

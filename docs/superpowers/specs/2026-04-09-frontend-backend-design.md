@@ -20,7 +20,7 @@ Scope: `frontend/`, `backend/` only — `ai/` 由 HansonChu 負責，不在此�
 
 ## 開發切片
 
-### 切片 1 — Pipeline 跑通
+### 切片 1 — Pipeline 跑通 ✅ DONE（merged to main 2026-04-10）
 
 目標：整條 request → response 流程可運作，不依賴真實 MediaPipe 或 ONNX。
 
@@ -35,7 +35,7 @@ Scope: `frontend/`, `backend/` only — `ai/` 由 HansonChu 負責，不在此�
 - `CameraPage`：暫時用固定假 landmarks（切片 1 測試用），呼叫 `infer_provider`
 - `FeedbackPage`：顯示 `error_type` 和 `suggestion` 純文字
 
-### 切片 2 — MediaPipe 接入
+### 切片 2 — MediaPipe 接入 🔄 CURRENT
 
 目標：用真實手勢驅動推論。
 
@@ -156,6 +156,18 @@ MediaPipe Hand 21 個節點依官方拓撲連線：
 
 ---
 
+## BL-009 — Design System（與 BL-003/BL-004 同步實作）
+
+詳見 `DESIGN.md`。Flutter 端需實作：
+- `lib/shared/theme/app_theme.dart` — ColorScheme + TextTheme
+- `lib/shared/theme/app_colors.dart` — 所有色彩 token
+- `lib/shared/theme/app_spacing.dart` — spacing scale
+- `google_fonts` 依賴（Plus Jakarta Sans + Geist Mono）
+- Chip、ConfidenceBar 共用元件
+- CameraPage Bottom Sheet 樣式、FeedbackPage 卡片樣式
+
+---
+
 ## 範圍外（MVP 不包含）
 
 - `ai/` 目錄（HansonChu 負責）
@@ -169,9 +181,9 @@ MediaPipe Hand 21 個節點依官方拓撲連線：
 
 ## 驗收條件（MVP 完成定義）
 
-- [ ] `POST /infer` 接受 21 landmarks，回傳合法 JSON（stub 或真實 ONNX）
-- [ ] VLM 真實呼叫可運作（需 API key 設定）
-- [ ] Flutter App 可在 Android 上開啟相機
+- [x] `POST /infer` 接受 21 landmarks，回傳合法 JSON（stub 或真實 ONNX）
+- [x] VLM 真實呼叫可運作（需 API key 設定）
+- [x] FeedbackPage 顯示 error_type、confidence、suggestion
+- [ ] Flutter App 可在 Android 上開啟相機（真實 camera package）
 - [ ] MediaPipe 從相機幀取得 21 landmarks 並送出 API request
-- [ ] FeedbackPage 顯示 error_type、confidence、suggestion
 - [ ] 手勢骨架 overlay 正確繪製在相機畫面上
