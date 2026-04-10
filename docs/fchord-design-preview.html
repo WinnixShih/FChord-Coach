@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FChord Coach — Design Preview</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:       #F7F5F1;
+  --surface:  #FFFFFF;
+  --text:     #1C1C1E;
+  --muted:    #6C6C70;
+  --accent:   #2D6A4F;
+  --accent-light: rgba(45,106,79,0.12);
+  --warn:     #E07A2F;
+  --warn-light: rgba(224,122,47,0.12);
+  --border:   rgba(28,28,30,0.08);
+  --shadow:   0 2px 12px rgba(28,28,30,0.08);
+  --rad: 14px;
+  --mono: 'Geist Mono', monospace;
+  --sans: 'Plus Jakarta Sans', sans-serif;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--sans);
+  font-size: 14px;
+  line-height: 1.6;
+  padding: 2rem 1.5rem 5rem;
+  max-width: 960px;
+  margin: 0 auto;
+}
+.toggle-wrap { display: flex; justify-content: flex-end; margin-bottom: 2rem; }
+.toggle-btn {
+  font-family: var(--mono); font-size: 11px; letter-spacing: .05em;
+  padding: 6px 14px; border-radius: 100px;
+  border: 1px solid var(--border); background: var(--surface);
+  color: var(--muted); cursor: pointer;
+}
+.toggle-btn:hover { border-color: var(--accent); color: var(--accent); }
+.eyebrow { font-family: var(--mono); font-size: 10px; letter-spacing: .12em; text-transform: uppercase; color: var(--accent); margin-bottom: .5rem; }
+h1 { font-size: 2rem; font-weight: 700; letter-spacing: -.03em; margin-bottom: .35rem; }
+.subtitle { color: var(--muted); font-size: 13.5px; }
+.header-rule { border: none; border-top: 1px solid var(--border); margin: 2rem 0; }
+.sec { font-family: var(--mono); font-size: 10px; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); margin: 3rem 0 1.25rem; padding-bottom: .6rem; border-bottom: 1px solid var(--border); }
+.palette { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 1rem; }
+.swatch-wrap { display: flex; flex-direction: column; gap: 6px; }
+.swatch { width: 72px; height: 72px; border-radius: 8px; border: 1px solid var(--border); }
+.swatch-name { font-family: var(--mono); font-size: 9px; color: var(--muted); }
+.swatch-hex { font-family: var(--mono); font-size: 9px; color: var(--text); font-weight: 500; }
+.type-specimen { background: var(--surface); border: 1px solid var(--border); border-radius: var(--rad); padding: 1.5rem; margin-bottom: 10px; }
+.type-label { font-family: var(--mono); font-size: 9px; color: var(--muted); letter-spacing: .1em; text-transform: uppercase; margin-bottom: .5rem; }
+.t-display { font-size: 2.4rem; font-weight: 700; letter-spacing: -.03em; line-height: 1.1; }
+.t-heading { font-size: 1.3rem; font-weight: 600; }
+.t-body { font-size: 14px; color: var(--muted); line-height: 1.7; }
+.t-mono { font-family: var(--mono); font-size: 22px; font-weight: 500; color: var(--accent); letter-spacing: -.01em; }
+.t-caption { font-size: 11px; color: var(--muted); letter-spacing: .01em; }
+.comp-row { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: .75rem; align-items: center; }
+.btn-primary { background: var(--accent); color: #fff; border: none; padding: 10px 20px; border-radius: 100px; font-family: var(--sans); font-size: 13px; font-weight: 600; cursor: pointer; }
+.btn-secondary { background: transparent; color: var(--accent); border: 1.5px solid var(--accent); padding: 9px 20px; border-radius: 100px; font-family: var(--sans); font-size: 13px; font-weight: 600; cursor: pointer; }
+.btn-ghost { background: transparent; color: var(--muted); border: 1px solid var(--border); padding: 9px 20px; border-radius: 100px; font-family: var(--sans); font-size: 13px; cursor: pointer; }
+.chip { display: inline-flex; align-items: center; gap: 5px; padding: 4px 10px; border-radius: 100px; font-size: 11px; font-weight: 500; }
+.chip-correct { background: var(--accent-light); color: var(--accent); }
+.chip-error { background: var(--warn-light); color: var(--warn); }
+.progress-bar { height: 6px; background: var(--border); border-radius: 3px; overflow: hidden; }
+.progress-fill-accent { height: 100%; background: var(--accent); border-radius: 3px; }
+.progress-fill-warn { height: 100%; background: var(--warn); border-radius: 3px; }
+.mockups { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+@media (max-width: 640px) { .mockups { grid-template-columns: 1fr; } }
+.phone-wrap { display: flex; flex-direction: column; gap: 10px; }
+.phone-label { font-family: var(--mono); font-size: 10px; color: var(--muted); letter-spacing: .08em; text-transform: uppercase; }
+.phone { width: 100%; aspect-ratio: 9/19; background: var(--surface); border-radius: 36px; border: 8px solid #1C1C1E; box-shadow: 0 20px 60px rgba(0,0,0,0.2); overflow: hidden; position: relative; display: flex; flex-direction: column; }
+.camera-view { flex: 1; background: #1a1a1a; position: relative; display: flex; align-items: center; justify-content: center; overflow: hidden; }
+.camera-placeholder { width: 100%; height: 100%; background: linear-gradient(160deg, #2a2a2a 0%, #1a1a1a 50%, #242424 100%); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; }
+.camera-icon { font-size: 28px; opacity: .3; }
+.camera-text { font-size: 9px; color: rgba(255,255,255,.2); font-family: var(--mono); letter-spacing: .08em; }
+.skeleton-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; }
+.status-bar { height: 28px; background: rgba(0,0,0,.6); display: flex; align-items: center; padding: 0 14px; flex-shrink: 0; }
+.bottom-sheet { background: rgba(247,245,241,0.95); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border-top-left-radius: 20px; border-top-right-radius: 20px; padding: 10px 14px 14px; flex-shrink: 0; }
+.sheet-handle { width: 30px; height: 3px; background: var(--border); border-radius: 2px; margin: 0 auto 10px; }
+.sheet-label { font-family: var(--mono); font-size: 8px; color: var(--muted); letter-spacing: .1em; text-transform: uppercase; margin-bottom: 6px; }
+.sheet-error { font-size: 12px; font-weight: 600; color: var(--warn); margin-bottom: 4px; }
+.sheet-suggestion { font-size: 10px; color: var(--muted); line-height: 1.5; margin-bottom: 8px; }
+.sheet-confidence-row { display: flex; align-items: center; gap: 6px; }
+.sheet-pct { font-family: var(--mono); font-size: 11px; font-weight: 500; color: var(--accent); min-width: 32px; }
+.sheet-bar { flex: 1; height: 4px; background: var(--border); border-radius: 2px; overflow: hidden; }
+.sheet-bar-fill { height: 100%; background: var(--accent); border-radius: 2px; }
+.nav-bar { background: rgba(247,245,241,0.95); backdrop-filter: blur(20px); display: flex; justify-content: space-around; align-items: center; padding: 8px 0 10px; border-top: 1px solid var(--border); flex-shrink: 0; }
+.nav-item { display: flex; flex-direction: column; align-items: center; gap: 2px; }
+.nav-icon { font-size: 14px; }
+.nav-text { font-size: 8px; color: var(--muted); }
+.nav-text.active { color: var(--accent); font-weight: 600; }
+.fb-page { flex: 1; overflow-y: auto; background: var(--bg); display: flex; flex-direction: column; padding: 12px; }
+.fb-header { margin-bottom: 10px; }
+.fb-title { font-size: 14px; font-weight: 700; }
+.fb-subtitle { font-size: 9px; color: var(--muted); }
+.result-card { background: var(--surface); border-radius: 14px; border: 1px solid var(--border); padding: 12px; margin-bottom: 8px; box-shadow: var(--shadow); }
+.result-type-label { font-family: var(--mono); font-size: 7px; color: var(--muted); letter-spacing: .1em; text-transform: uppercase; margin-bottom: 4px; }
+.result-error-name { font-size: 12px; font-weight: 700; color: var(--warn); margin-bottom: 4px; }
+.result-correct-name { font-size: 12px; font-weight: 700; color: var(--accent); margin-bottom: 4px; }
+.result-divider { border: none; border-top: 1px solid var(--border); margin: 8px 0; }
+.result-ai-label { font-family: var(--mono); font-size: 7px; color: var(--accent); letter-spacing: .1em; text-transform: uppercase; margin-bottom: 3px; }
+.result-ai-text { font-size: 10px; line-height: 1.55; color: var(--text); }
+.conf-row { display: flex; align-items: center; gap: 8px; }
+.conf-num { font-family: var(--mono); font-size: 16px; font-weight: 500; color: var(--accent); min-width: 40px; }
+.conf-bar-wrap { flex: 1; }
+.conf-bar-bg { height: 5px; background: var(--border); border-radius: 3px; overflow: hidden; }
+.conf-bar-fill { height: 100%; border-radius: 3px; }
+.conf-label { font-size: 8px; color: var(--muted); margin-bottom: 2px; }
+body.dark {
+  --bg: #0F0F0F; --surface: #1C1C1E; --text: #E5E5EA; --muted: #8E8E93; --border: rgba(255,255,255,0.08); --shadow: 0 2px 12px rgba(0,0,0,0.3);
+}
+body.dark .bottom-sheet, body.dark .nav-bar { background: rgba(28,28,30,0.95); }
+body.dark .fb-page { background: var(--bg); }
+body.dark .phone { border-color: #3a3a3c; }
+</style>
+</head>
+<body>
+
+<div class="toggle-wrap">
+  <button class="toggle-btn" onclick="document.body.classList.toggle('dark');this.textContent=document.body.classList.contains('dark')?'Light mode':'Dark mode'">Dark mode</button>
+</div>
+
+<div class="eyebrow">Design Preview</div>
+<h1>FChord Coach</h1>
+<p class="subtitle">Clinical Calm — 吉他 F 和弦教學 App · Android · Flutter</p>
+<hr class="header-rule">
+
+<div class="sec">Color System</div>
+<div class="palette">
+  <div class="swatch-wrap">
+    <div class="swatch" style="background:#F7F5F1;"></div>
+    <div class="swatch-name">Background</div>
+    <div class="swatch-hex">#F7F5F1</div>
+  </div>
+  <div class="swatch-wrap">
+    <div class="swatch" style="background:#FFFFFF;"></div>
+    <div class="swatch-name">Surface</div>
+    <div class="swatch-hex">#FFFFFF</div>
+  </div>
+  <div class="swatch-wrap">
+    <div class="swatch" style="background:#1C1C1E;"></div>
+    <div class="swatch-name">Primary Text</div>
+    <div class="swatch-hex">#1C1C1E</div>
+  </div>
+  <div class="swatch-wrap">
+    <div class="swatch" style="background:#6C6C70;"></div>
+    <div class="swatch-name">Muted Text</div>
+    <div class="swatch-hex">#6C6C70</div>
+  </div>
+  <div class="swatch-wrap">
+    <div class="swatch" style="background:#2D6A4F;"></div>
+    <div class="swatch-name">Accent / Correct</div>
+    <div class="swatch-hex">#2D6A4F</div>
+  </div>
+  <div class="swatch-wrap">
+    <div class="swatch" style="background:#52B788;"></div>
+    <div class="swatch-name">Accent Light</div>
+    <div class="swatch-hex">#52B788</div>
+  </div>
+  <div class="swatch-wrap">
+    <div class="swatch" style="background:#E07A2F;"></div>
+    <div class="swatch-name">Warning / Error</div>
+    <div class="swatch-hex">#E07A2F</div>
+  </div>
+</div>
+
+<div class="sec">Typography</div>
+<div class="type-specimen">
+  <div class="type-label">Display — Plus Jakarta Sans 700</div>
+  <div class="t-display">F Chord</div>
+</div>
+<div class="type-specimen">
+  <div class="type-label">Heading — Plus Jakarta Sans 600</div>
+  <div class="t-heading">食指沒完全封弦</div>
+</div>
+<div class="type-specimen">
+  <div class="type-label">Body — Plus Jakarta Sans 400</div>
+  <div class="t-body">試著把食指稍微往下移，讓側面骨頭接觸琴弦，你做得到的！保持手腕放鬆。</div>
+</div>
+<div class="type-specimen">
+  <div class="type-label">Confidence Score — Geist Mono 500 (tabular-nums)</div>
+  <div class="t-mono">82.4%</div>
+</div>
+<div class="type-specimen">
+  <div class="type-label">Caption / Label — Plus Jakarta Sans 400</div>
+  <div class="t-caption">CONFIDENCE · REAL-TIME ANALYSIS · 2 calls/min</div>
+</div>
+
+<div class="sec">Components</div>
+<div class="type-specimen">
+  <div class="type-label" style="margin-bottom:12px">Buttons</div>
+  <div class="comp-row">
+    <button class="btn-primary">分析姿勢</button>
+    <button class="btn-secondary">查看歷史</button>
+    <button class="btn-ghost">略過</button>
+  </div>
+  <div class="type-label" style="margin:16px 0 8px">Status Chips</div>
+  <div class="comp-row">
+    <span class="chip chip-correct">&#x2713; 指型正確</span>
+    <span class="chip chip-error">&#x26A0; 食指未封弦</span>
+  </div>
+  <div class="type-label" style="margin:16px 0 8px">Confidence Bar</div>
+  <div style="display:flex;flex-direction:column;gap:8px;max-width:260px;">
+    <div>
+      <div style="display:flex;justify-content:space-between;margin-bottom:4px;">
+        <span style="font-size:11px;color:var(--muted)">信心指數</span>
+        <span style="font-family:var(--mono);font-size:11px;color:var(--accent);font-weight:500">82%</span>
+      </div>
+      <div class="progress-bar"><div class="progress-fill-accent" style="width:82%"></div></div>
+    </div>
+    <div>
+      <div style="display:flex;justify-content:space-between;margin-bottom:4px;">
+        <span style="font-size:11px;color:var(--muted)">錯誤率</span>
+        <span style="font-family:var(--mono);font-size:11px;color:var(--warn);font-weight:500">38%</span>
+      </div>
+      <div class="progress-bar"><div class="progress-fill-warn" style="width:38%"></div></div>
+    </div>
+  </div>
+</div>
+
+<div class="sec">App Screens</div>
+<div class="mockups">
+
+  <div class="phone-wrap">
+    <div class="phone-label">Camera Page — 偵測中</div>
+    <div class="phone">
+      <div class="status-bar">
+        <span style="font-family:var(--mono);font-size:7px;color:rgba(255,255,255,.4)">9:41</span>
+        <div style="flex:1"></div>
+        <span style="font-size:8px;color:rgba(255,255,255,.4)">&#9679; &#9679;</span>
+      </div>
+      <div class="camera-view">
+        <div class="camera-placeholder">
+          <div class="camera-icon">&#128247;</div>
+          <div class="camera-text">CAMERA FEED</div>
+        </div>
+        <svg class="skeleton-overlay" viewBox="0 0 200 300" preserveAspectRatio="xMidYMid meet">
+          <g stroke="#52B788" stroke-width="1.5" stroke-linecap="round" opacity="0.85">
+            <circle cx="100" cy="230" r="3" fill="#52B788"/>
+            <line x1="100" y1="230" x2="78" y2="200"/>
+            <line x1="78" y1="200" x2="62" y2="175"/>
+            <line x1="62" y1="175" x2="50" y2="155"/>
+            <line x1="50" y1="155" x2="42" y2="140"/>
+            <line x1="100" y1="230" x2="90" y2="190"/>
+            <line x1="90" y1="190" x2="85" y2="155"/>
+            <line x1="85" y1="155" x2="82" y2="130"/>
+            <line x1="82" y1="130" x2="80" y2="112"/>
+            <line x1="100" y1="230" x2="100" y2="188"/>
+            <line x1="100" y1="188" x2="100" y2="152"/>
+            <line x1="100" y1="152" x2="100" y2="126"/>
+            <line x1="100" y1="126" x2="100" y2="108"/>
+            <line x1="100" y1="230" x2="110" y2="190"/>
+            <line x1="110" y1="190" x2="114" y2="155"/>
+            <line x1="114" y1="155" x2="116" y2="130"/>
+            <line x1="116" y1="130" x2="117" y2="112"/>
+            <line x1="100" y1="230" x2="120" y2="195"/>
+            <line x1="120" y1="195" x2="128" y2="162"/>
+            <line x1="128" y1="162" x2="133" y2="140"/>
+            <line x1="133" y1="140" x2="136" y2="125"/>
+            <line x1="90" y1="190" x2="100" y2="188" stroke-dasharray="2,3" opacity="0.5"/>
+            <line x1="100" y1="188" x2="110" y2="190" stroke-dasharray="2,3" opacity="0.5"/>
+            <line x1="110" y1="190" x2="120" y2="195" stroke-dasharray="2,3" opacity="0.5"/>
+            <circle cx="42" cy="140" r="2.5" fill="#52B788"/>
+            <circle cx="80" cy="112" r="2.5" fill="#52B788"/>
+            <circle cx="100" cy="108" r="2.5" fill="#52B788"/>
+            <circle cx="117" cy="112" r="2.5" fill="#52B788"/>
+            <circle cx="136" cy="125" r="2.5" fill="#52B788"/>
+            <circle cx="80" cy="112" r="5" fill="none" stroke="#E07A2F" stroke-width="1.5"/>
+          </g>
+        </svg>
+      </div>
+      <div class="bottom-sheet">
+        <div class="sheet-handle"></div>
+        <div class="sheet-label">即時偵測</div>
+        <div class="sheet-error">食指未完全封弦</div>
+        <div class="sheet-suggestion">試著把食指往下移一點，用側面骨頭接觸弦。</div>
+        <div class="sheet-confidence-row">
+          <div class="sheet-pct">78%</div>
+          <div class="sheet-bar">
+            <div class="sheet-bar-fill" style="width:78%"></div>
+          </div>
+          <span style="font-size:8px;color:var(--muted);margin-left:4px">信心</span>
+        </div>
+      </div>
+      <div class="nav-bar">
+        <div class="nav-item">
+          <span class="nav-icon" style="color:var(--accent)">&#9711;</span>
+          <span class="nav-text active">練習</span>
+        </div>
+        <div class="nav-item">
+          <span class="nav-icon">&#9675;</span>
+          <span class="nav-text">歷史</span>
+        </div>
+        <div class="nav-item">
+          <span class="nav-icon">&#9675;</span>
+          <span class="nav-text">設定</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="phone-wrap">
+    <div class="phone-label">Feedback Page — 分析結果</div>
+    <div class="phone">
+      <div class="status-bar" style="background:#f7f5f1;">
+        <span style="font-family:var(--mono);font-size:7px;color:var(--muted)">9:41</span>
+        <div style="flex:1"></div>
+      </div>
+      <div class="fb-page">
+        <div class="fb-header">
+          <div class="fb-title">分析結果</div>
+          <div class="fb-subtitle">2026年4月10日 · 14:32</div>
+        </div>
+        <div class="result-card">
+          <div class="result-type-label">偵測到問題</div>
+          <div class="result-error-name">食指未完全封弦</div>
+          <span class="chip chip-error" style="font-size:9px;padding:2px 8px;">index_not_barring</span>
+          <hr class="result-divider">
+          <div class="result-ai-label">AI 建議</div>
+          <div class="result-ai-text">試著把食指稍微往下移，讓側面骨頭接觸琴弦。保持手腕放鬆！</div>
+        </div>
+        <div class="result-card">
+          <div class="result-type-label">信心指數</div>
+          <div class="conf-row">
+            <div class="conf-num">82%</div>
+            <div class="conf-bar-wrap">
+              <div class="conf-label">偵測可信度</div>
+              <div class="conf-bar-bg">
+                <div class="conf-bar-fill" style="width:82%;background:var(--accent)"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="result-card" style="border-color:rgba(45,106,79,.2);">
+          <div class="result-type-label">範例：正確狀態</div>
+          <div class="result-correct-name">指型正確 &#x2713;</div>
+          <span class="chip chip-correct" style="font-size:9px;padding:2px 8px;">correct</span>
+          <hr class="result-divider">
+          <div class="result-ai-label">AI 建議</div>
+          <div class="result-ai-text">很棒！指型非常標準，繼續維持這個姿勢練習。</div>
+        </div>
+        <button class="btn-primary" style="width:100%;margin-top:4px;">再試一次</button>
+      </div>
+      <div class="nav-bar">
+        <div class="nav-item">
+          <span class="nav-icon">&#9675;</span>
+          <span class="nav-text">練習</span>
+        </div>
+        <div class="nav-item">
+          <span class="nav-icon" style="color:var(--accent)">&#9711;</span>
+          <span class="nav-text active">歷史</span>
+        </div>
+        <div class="nav-item">
+          <span class="nav-icon">&#9675;</span>
+          <span class="nav-text">設定</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<div class="sec">Design Decisions</div>
+<div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--rad);overflow:hidden;">
+  <table style="width:100%;border-collapse:collapse;font-size:12.5px;">
+    <thead>
+      <tr style="background:var(--bg);">
+        <th style="text-align:left;padding:.6rem 1rem;font-family:var(--mono);font-size:9px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);border-bottom:1px solid var(--border)">決策</th>
+        <th style="text-align:left;padding:.6rem 1rem;font-family:var(--mono);font-size:9px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);border-bottom:1px solid var(--border)">理由</th>
+        <th style="text-align:left;padding:.6rem 1rem;font-family:var(--mono);font-size:9px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);border-bottom:1px solid var(--border)">競品對比</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td style="padding:.65rem 1rem;border-bottom:1px solid var(--border);font-weight:600">#F7F5F1 暖奶油底色</td>
+        <td style="padding:.65rem 1rem;border-bottom:1px solid var(--border);color:var(--muted)">比冷白有質感，練習時不刺眼</td>
+        <td style="padding:.65rem 1rem;border-bottom:1px solid var(--border);color:var(--muted)">無人使用</td>
+      </tr>
+      <tr>
+        <td style="padding:.65rem 1rem;border-bottom:1px solid var(--border);font-weight:600">#2D6A4F 深森林綠</td>
+        <td style="padding:.65rem 1rem;border-bottom:1px solid var(--border);color:var(--muted)">成熟、鎮定；琴弦/自然感</td>
+        <td style="padding:.65rem 1rem;border-bottom:1px solid var(--border);color:var(--muted)">競品用螢光綠、電光紅、橘</td>
+      </tr>
+      <tr>
+        <td style="padding:.65rem 1rem;border-bottom:1px solid var(--border);font-weight:600">Bottom Sheet 回饋</td>
+        <td style="padding:.65rem 1rem;border-bottom:1px solid var(--border);color:var(--muted)">相機永遠可見，不中斷流</td>
+        <td style="padding:.65rem 1rem;border-bottom:1px solid var(--border);color:var(--muted)">競品多為全頁跳轉</td>
+      </tr>
+      <tr>
+        <td style="padding:.65rem 1rem;border-bottom:1px solid var(--border);font-weight:600">Geist Mono 數字</td>
+        <td style="padding:.65rem 1rem;border-bottom:1px solid var(--border);color:var(--muted)">信心指數像儀器讀數，非遊戲分數</td>
+        <td style="padding:.65rem 1rem;border-bottom:1px solid var(--border);color:var(--muted)">競品用大型彩色計分板</td>
+      </tr>
+      <tr>
+        <td style="padding:.65rem 1rem;font-weight:600">細線骨架 + 橘色錯誤圈</td>
+        <td style="padding:.65rem 1rem;color:var(--muted)">手是主角，overlay 點到即止；錯誤點一目瞭然</td>
+        <td style="padding:.65rem 1rem;color:var(--muted)">無相機原生競品可比</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<div style="margin-top:3rem;text-align:center;font-family:var(--mono);font-size:10px;color:var(--muted);letter-spacing:.08em;">
+  FCHORD COACH &middot; CLINICAL CALM &middot; DESIGN PREVIEW
+</div>
+
+</body>
+</html>
