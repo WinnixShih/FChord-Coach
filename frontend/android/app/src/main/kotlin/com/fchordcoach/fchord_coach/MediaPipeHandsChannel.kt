@@ -50,7 +50,7 @@ object MediaPipeHandsChannel {
                 .build()
             val options = HandLandmarkerOptions.builder()
                 .setBaseOptions(baseOptions)
-                .setNumHands(1)
+                .setNumHands(2)  // 偵測雙手，再篩出按弦手
                 .setMinHandDetectionConfidence(0.5f)
                 .setMinTrackingConfidence(0.5f)
                 .build()
@@ -62,7 +62,15 @@ object MediaPipeHandsChannel {
 
         if (detectionResult.landmarks().isEmpty()) return null
 
-        return detectionResult.landmarks()[0].map { landmark ->
+        // 只取按弦手（左手）。前鏡頭儲存的 JPEG 未鏡像，
+        // MediaPipe 依手部解剖學判斷左右，左手 = "Left"。
+        val handednesses = detectionResult.handednesses()
+        val chordHandIndex = handednesses.indexOfFirst { categories ->
+            categories.firstOrNull()?.categoryName() == "Left"
+        }
+        if (chordHandIndex == -1) return null
+
+        return detectionResult.landmarks()[chordHandIndex].map { landmark ->
             mapOf(
                 "x" to landmark.x().toDouble(),
                 "y" to landmark.y().toDouble(),
