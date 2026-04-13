@@ -8,6 +8,7 @@ import 'package:path_provider/path_provider.dart';
 
 import '../../providers/infer_provider.dart';
 import '../../services/mediapipe_channel.dart';
+import '../../shared/painters/hand_skeleton_painter.dart';
 import '../feedback/feedback_page.dart';
 
 class CameraPage extends ConsumerStatefulWidget {
@@ -23,7 +24,6 @@ class _CameraPageState extends ConsumerState<CameraPage>
   bool _isInitialized = false;
   bool _isAnalyzing = false;
   Timer? _analysisTimer;
-  // ignore: unused_field — BL-004 HandSkeletonPainter 會讀取此值
   List<Map<String, double>>? _lastLandmarks;
 
   @override
@@ -123,31 +123,37 @@ class _CameraPageState extends ConsumerState<CameraPage>
       backgroundColor: const Color(0xFF1C1C1E),
       body: Stack(
         children: [
-          // ── 相機畫面（佔約 65% 螢幕高度）──
+          // ── 相機畫面（佔約 65% 螢幕高度）+ 骨架 Overlay ──
           Positioned.fill(
             child: Column(
               children: [
                 Expanded(
                   flex: 65,
-                  child: _isInitialized
-                      ? CameraPreview(_controller!)
-                      : const Center(
-                          child: CircularProgressIndicator(
-                            color: Color(0xFF52B788),
+                  child: Stack(
+                    fit: StackFit.expand,
+                    children: [
+                      _isInitialized
+                          ? CameraPreview(_controller!)
+                          : const Center(
+                              child: CircularProgressIndicator(
+                                color: Color(0xFF52B788),
+                              ),
+                            ),
+                      if (_lastLandmarks != null)
+                        CustomPaint(
+                          painter: HandSkeletonPainter(
+                            landmarks: _lastLandmarks!,
+                            errorType: inferState.valueOrNull?.errorType,
                           ),
                         ),
+                    ],
+                  ),
                 ),
                 // 底部空間留給 Bottom Sheet
                 const Flexible(flex: 35, child: SizedBox()),
               ],
             ),
           ),
-
-          // ── 骨架 Overlay 預留位置（BL-004 實作時在此插入 HandSkeletonPainter）──
-          // if (_lastLandmarks != null)
-          //   Positioned.fill(
-          //     child: CustomPaint(painter: HandSkeletonPainter(_lastLandmarks!)),
-          //   ),
 
           // ── 底部 Bottom Sheet 風格反饋區 ──
           Align(
