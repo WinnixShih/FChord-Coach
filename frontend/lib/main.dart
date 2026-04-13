@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'features/camera/camera_page.dart';
+import 'features/permission/permission_gate.dart';
 
 void main() {
   runApp(const ProviderScope(child: FChordCoachApp()));
@@ -17,7 +17,7 @@ class FChordCoachApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      home: const CameraPage(),
+      home: const PermissionGate(),
     );
   }
 }
