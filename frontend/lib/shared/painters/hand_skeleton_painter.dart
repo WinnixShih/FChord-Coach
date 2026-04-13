@@ -91,8 +91,13 @@ class HandSkeletonPainter extends CustomPainter {
     }
   }
 
-  Offset _toOffset(Map<String, double> lm, Size size) =>
-      Offset((lm['x'] ?? 0) * size.width, (lm['y'] ?? 0) * size.height);
+  Offset _toOffset(Map<String, double> lm, Size size) {
+    // 前鏡頭 JPEG 未鏡像，但 CameraPreview 顯示的是鏡像畫面。
+    // 翻轉 x 軸使骨架對齊 preview。
+    final x = 1.0 - (lm['x'] ?? 0);
+    final y = lm['y'] ?? 0;
+    return Offset(x * size.width, y * size.height);
+  }
 
   void _drawDashedLine(Canvas canvas, Offset p1, Offset p2, Paint paint) {
     const dashLen = 6.0;
