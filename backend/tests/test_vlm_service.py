@@ -77,6 +77,9 @@ async def test_call_vlm_gemini() -> None:
 
     assert result == "試著把食指壓平！"
     mock_client.aio.models.generate_content.assert_called_once()
+    config = mock_client.aio.models.generate_content.call_args.kwargs["config"]
+    assert config.thinking_config.thinking_budget == 0
+    assert config.max_output_tokens == 200
 
 
 @pytest.mark.asyncio

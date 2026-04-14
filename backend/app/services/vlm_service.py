@@ -67,7 +67,8 @@ class VLMService:
                 contents=prompt,
                 config=types.GenerateContentConfig(
                     system_instruction=_SYSTEM_PROMPT,
-                    max_output_tokens=100,
+                    max_output_tokens=200,
+                    thinking_config=types.ThinkingConfig(thinking_budget=0),
                 ),
             )
             return resp.text
