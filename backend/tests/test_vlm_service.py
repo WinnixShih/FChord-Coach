@@ -23,6 +23,7 @@ async def test_returns_fallback_when_rate_limited() -> None:
 @pytest.mark.asyncio
 async def test_suggest_delegates_to_call_vlm() -> None:
     svc = VLMService()
+    svc._api_key = "test-key"
     with patch.object(svc, "_call_vlm", new_callable=AsyncMock, return_value="好樣的！") as mock:
         result = await svc.suggest("index_not_barring", [])
     assert result == "好樣的！"
