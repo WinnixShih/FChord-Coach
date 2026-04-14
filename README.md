@@ -20,8 +20,9 @@ The project consists of three main components:
 
 - Exposes a `/infer` endpoint that accepts 21 hand landmark coordinates and returns analysis results
 - Loads a pre-trained GNN model in ONNX format for chord posture classification
-- Integrates with a Vision-Language Model API (GPT-4o or Claude) for generating natural-language suggestions
+- Integrates with a Vision-Language Model API (Claude, GPT-4o, or Gemini) for generating natural-language suggestions
 - Rate-limited to 2 VLM calls per minute
+- CI: GitHub Actions runs backend `pytest` and `flutter analyze` on every push / PR
 
 ### AI / ML
 
@@ -52,7 +53,7 @@ flutter run                               # connect an Android device or start e
 cd backend
 python -m venv .venv && source .venv/bin/activate   # Windows: .venv\Scripts\activate
 pip install -r requirements.txt -r requirements-dev.txt
-cp .env.example .env    # fill in ANTHROPIC_API_KEY or OPENAI_API_KEY
+cp .env.example .env    # fill in ANTHROPIC_API_KEY, OPENAI_API_KEY, or GEMINI_API_KEY
 uvicorn main:app --reload
 ```
 
