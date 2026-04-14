@@ -16,8 +16,19 @@ def clear_rate_limit():
 async def test_returns_fallback_when_rate_limited() -> None:
     vlm_module._call_times.extend([time.time(), time.time()])
     svc = VLMService()
-    result = await svc.suggest("correct", [])
+    svc._api_key = "test-key"
+    result = await svc.suggest("index_not_barring", [])
     assert result == "慢慢來，專注在目前的問題上，你已經很努力了！"
+
+
+@pytest.mark.asyncio
+async def test_suggest_correct_returns_fixed_message() -> None:
+    svc = VLMService()
+    svc._api_key = "test-key"
+    with patch.object(svc, "_call_vlm", new_callable=AsyncMock) as mock:
+        result = await svc.suggest("correct", [])
+    assert result == "手型正確，保持這個感覺！"
+    mock.assert_not_called()
 
 
 @pytest.mark.asyncio
