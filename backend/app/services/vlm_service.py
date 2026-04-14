@@ -2,6 +2,8 @@ import os
 import time
 import anthropic
 import openai
+from google import genai
+from google.genai import types
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -17,7 +19,7 @@ _FALLBACK = "慢慢來，專注在目前的問題上，你已經很努力了！"
 class VLMService:
     def __init__(self) -> None:
         self._api_key = os.getenv("VLM_API_KEY", "")
-        self._provider = os.getenv("VLM_PROVIDER", "anthropic")
+        self._provider = os.getenv("VLM_PROVIDER", "gemini")
 
     async def suggest(self, error_type: str, landmarks) -> str:
         if not self._api_key or not self._can_call():
@@ -34,6 +36,17 @@ class VLMService:
 
     async def _call_vlm(self, error_type: str) -> str:
         prompt = _USER_TEMPLATE.format(error_type=error_type)
+        if self._provider == "gemini":
+            client = genai.Client(api_key=self._api_key)
+            resp = await client.aio.models.generate_content(
+                model="gemini-2.5-flash",
+                contents=prompt,
+                config=types.GenerateContentConfig(
+                    system_instruction=_SYSTEM_PROMPT,
+                    max_output_tokens=100,
+                ),
+            )
+            return resp.text
         if self._provider == "anthropic":
             client = anthropic.AsyncAnthropic(api_key=self._api_key)
             msg = await client.messages.create(

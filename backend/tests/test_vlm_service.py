@@ -50,6 +50,25 @@ async def test_call_vlm_anthropic() -> None:
 
 
 @pytest.mark.asyncio
+async def test_call_vlm_gemini() -> None:
+    mock_resp = MagicMock()
+    mock_resp.text = "試著把食指壓平！"
+
+    with patch("google.genai.Client") as mock_cls:
+        mock_client = MagicMock()
+        mock_client.aio.models.generate_content = AsyncMock(return_value=mock_resp)
+        mock_cls.return_value = mock_client
+
+        svc = VLMService()
+        svc._provider = "gemini"
+        svc._api_key = "test-key"
+        result = await svc._call_vlm("index_not_barring")
+
+    assert result == "試著把食指壓平！"
+    mock_client.aio.models.generate_content.assert_called_once()
+
+
+@pytest.mark.asyncio
 async def test_call_vlm_openai() -> None:
     mock_resp = MagicMock()
     mock_resp.choices = [MagicMock(message=MagicMock(content="拇指位置調低！"))]
