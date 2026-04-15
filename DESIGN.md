@@ -64,19 +64,21 @@
 - 骨架不搶戲——使用者的手才是主角
 
 ## BL-009 實作範圍（Flutter）
-BL-009 的 Flutter 實作包含以下工作，在 BL-003 / BL-004 開發期間同步進行：
+BL-009 的 Flutter 實作包含以下工作，在 BL-003 / BL-004 開發期間同步進行。
 
-| 工作項目 | 說明 |
-|----------|------|
-| `google_fonts` 依賴 | 加入 pubspec.yaml，設定 Plus Jakarta Sans + Geist Mono |
-| `AppTheme` | 建立 `lib/shared/theme/app_theme.dart`，定義 ColorScheme、TextTheme |
-| `AppColors` | 建立 `lib/shared/theme/app_colors.dart`，定義所有 token |
-| `AppSpacing` | 建立 `lib/shared/theme/app_spacing.dart`，定義 spacing scale |
-| CameraPage 底色 | 相機外框/狀態欄配合 dark overlay |
-| Bottom Sheet 樣式 | 半透明 + backdrop blur，圓角 20dp |
-| FeedbackPage 重構 | 套用 result card 樣式、chip 元件、conf bar |
-| Chip widget | `CorrectChip` / `ErrorChip` 共用元件 |
-| ConfidenceBar widget | accent/warn 雙色版本 |
+Status 欄位反映截至 2026-04-15 的實際狀態；尚未完成的項目會在後續 BL-009 分支補齊。
+
+| 工作項目 | 說明 | Status |
+|----------|------|--------|
+| `google_fonts` 依賴 | 加入 pubspec.yaml，設定 Plus Jakarta Sans + Geist Mono | ⏳ 待補 |
+| `AppTheme` | 建立 `lib/shared/theme/app_theme.dart`，定義 ColorScheme、TextTheme | ⏳ 待補 |
+| `AppColors` | 建立 `lib/shared/theme/app_colors.dart`，定義所有 token | ✅ 已完成 |
+| `AppSpacing` | 建立 `lib/shared/theme/app_spacing.dart`，定義 spacing scale | ⏳ 待補 |
+| CameraPage 底色 | 相機外框/狀態欄配合 dark overlay | ⏳ 待補 |
+| Bottom Sheet 樣式 | 半透明 + backdrop blur，圓角 20dp | ⏳ 待補 |
+| FeedbackPage 重構 | 套用 result card 樣式、chip 元件、conf bar | ⏳ 待補 |
+| Chip widget | `CorrectChip` / `ErrorChip` 共用元件 | ⏳ 待補 |
+| ConfidenceBar widget | accent/warn 雙色版本 | ⏳ 待補 |
 
 ## Decisions Log
 | 日期 | 決策 | 理由 |
