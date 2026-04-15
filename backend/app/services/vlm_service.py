@@ -1,5 +1,8 @@
+import asyncio
 import os
 import time
+from typing import Awaitable, Callable, TypeVar
+
 import anthropic
 import openai
 from google import genai
@@ -10,6 +13,20 @@ load_dotenv()
 
 _RATE_LIMIT = 2
 _call_times: list[float] = []
+
+_MAX_ATTEMPTS = 3
+_BASE_DELAY = 1.0
+_MAX_DELAY = 4.0
+_RETRYABLE_STATUS = {429, 500, 502, 503, 504}
+_RETRYABLE_EXCEPTION_NAMES = {
+    "APITimeoutError",
+    "APIConnectionError",
+    "RateLimitError",
+    "InternalServerError",
+    "ServiceUnavailableError",
+    "ConnectTimeout",
+    "ReadTimeout",
+}
 
 _ERROR_LABELS: dict[str, str] = {
     "correct": "手型正確",
@@ -36,6 +53,32 @@ _USER_TEMPLATE = (
 
 _FALLBACK = "慢慢來，專注在目前的問題上，你已經很努力了！"
 
+T = TypeVar("T")
+
+
+def _is_retryable(exc: BaseException) -> bool:
+    status = getattr(exc, "status_code", None)
+    if status is None:
+        status = getattr(exc, "code", None)
+    if isinstance(status, int) and status in _RETRYABLE_STATUS:
+        return True
+    if isinstance(exc, asyncio.TimeoutError):
+        return True
+    return type(exc).__name__ in _RETRYABLE_EXCEPTION_NAMES
+
+
+async def _retry(fn: Callable[[], Awaitable[T]]) -> T:
+    delay = _BASE_DELAY
+    for attempt in range(_MAX_ATTEMPTS):
+        try:
+            return await fn()
+        except Exception as exc:
+            if attempt == _MAX_ATTEMPTS - 1 or not _is_retryable(exc):
+                raise
+            await asyncio.sleep(min(delay, _MAX_DELAY))
+            delay *= 2
+    raise RuntimeError("unreachable")
+
 
 class VLMService:
     def __init__(self) -> None:
@@ -48,7 +91,10 @@ class VLMService:
         if not self._api_key or not self._can_call():
             return _FALLBACK
         _call_times.append(time.time())
-        return await self._call_vlm(error_type)
+        try:
+            return await self._call_vlm(error_type)
+        except Exception:
+            return _FALLBACK
 
     def _can_call(self) -> bool:
         now = time.time()
@@ -60,6 +106,9 @@ class VLMService:
     async def _call_vlm(self, error_type: str) -> str:
         error_label = _ERROR_LABELS.get(error_type, error_type)
         prompt = _USER_TEMPLATE.format(error_label=error_label)
+        return await _retry(lambda: self._invoke_provider(prompt))
+
+    async def _invoke_provider(self, prompt: str) -> str:
         if self._provider == "gemini":
             client = genai.Client(api_key=self._api_key)
             resp = await client.aio.models.generate_content(
