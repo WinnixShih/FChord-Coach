@@ -1,37 +1,16 @@
-# Flutter
-frontend/.dart_tool/
-frontend/.packages
-frontend/build/
-frontend/pubspec.lock
-*.iml
+# 訓練資料
+ai/data/**/*.json
+
+# 模型權重
+ai/models/*.pt
+ai/models/*.onnx
+ai/models/*.tflite
 
 # Python
 __pycache__/
-*.py[cod]
-*.pyo
+*.pyc
 .venv/
-venv/
-backend/.env
-ai/.env
-*.egg-info/
-dist/
-.pytest_cache/
-
-# Models
-*.onnx
-*.pt
-*.pth
-ai/data/raw/
-ai/data/processed/
-
-# Agent team (local only)
-.agents/
+.env
 
 # OS
 .DS_Store
-Thumbs.db
-
-# IDE
-.idea/
-.vscode/
-*.swp
