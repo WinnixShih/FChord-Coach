@@ -2,47 +2,50 @@
 
 ## POST /infer
 
-Accepts 21 hand landmarks from MediaPipe and returns chord posture analysis.
+Backend 接收 MediaPipe landmarks，回傳 GNN 分析結果。
 
 ### Request
 
 ```json
 {
-  "landmarks": [
-    { "x": 0.5, "y": 0.3, "z": 0.01 },
-    ...
-  ]
+  "nodes": [[0.52, 0.33, -0.02], "...21 items"]
 }
 ```
 
-- `landmarks`: Array of exactly 21 objects, each with `x`, `y`, `z` (normalized 0–1)
+| Field   | Type             | Description                          |
+|---------|------------------|--------------------------------------|
+| `nodes` | `float[21][3]`   | MediaPipe normalized landmarks 0–1   |
 
 ### Response
 
 ```json
 {
-  "error_type": "index_not_barring",
-  "confidence": 0.91,
-  "suggestion": "Press your index finger flat across all strings at the 1st fret."
+  "nodes":             [[0.52, 0.33, -0.02], "..."],
+  "node_status":       [0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+  "label":             "err_index_low",
+  "confidence":        0.87,
+  "ghost_nodes":       [[0.50, 0.30], "...21 items"],
+  "error_duration_ms": 3200,
+  "suggestion":        "食指第一關節角度偏低，試著抬高手腕",
+  "frame_ms":          18
 }
 ```
 
-| Field | Type | Description |
-|-------|------|-------------|
-| `error_type` | string | Classified posture error (see below) |
-| `confidence` | float | Model confidence 0–1 |
-| `suggestion` | string | AI-generated improvement tip |
+| Field               | Type             | Description                                      |
+|---------------------|------------------|--------------------------------------------------|
+| `nodes`             | `float[21][3]`   | Echo of input                                    |
+| `node_status`       | `int[21]`        | Per-node: 0=ok, 1=warn, 2=error                 |
+| `label`             | `string`         | GNN classification result                        |
+| `confidence`        | `float`          | Softmax confidence 0–1                           |
+| `ghost_nodes`       | `float[21][2]`   | Target F chord skeleton (x, y only)              |
+| `error_duration_ms` | `int`            | Consecutive error duration in ms                 |
+| `suggestion`        | `string \| null` | VLM suggestion, null if not triggered            |
+| `frame_ms`          | `int`            | Inference latency in ms                          |
 
-### Error Types
+## ONNX Input Spec (for Backend Team)
 
-| Value | Description |
-|-------|-------------|
-| `correct` | F chord posture is correct |
-| `index_not_barring` | Index finger not flat across strings |
-| `thumb_position` | Thumb too high or low on neck |
-| `ring_pinky_curl` | Ring/pinky fingers not curled enough |
-| `wrist_angle` | Wrist angle causing string muting |
-
-## GET /health
-
-Returns `{ "status": "ok" }` when the server is running.
+```python
+x          = np.array(nodes, dtype=np.float32)   # [21, 3]
+edge_index = EDGE_INDEX.numpy().astype(np.int64) # [2, 46]  — from src/graph.py
+batch      = np.zeros(21, dtype=np.int64)         # all nodes belong to graph 0
+```
