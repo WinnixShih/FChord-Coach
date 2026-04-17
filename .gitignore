@@ -27,6 +27,9 @@ ai/data/processed/
 # Agent team (local only)
 .agents/
 
+# Claude Code (local tool config / skills)
+.claude/
+
 # OS
 .DS_Store
 Thumbs.db
