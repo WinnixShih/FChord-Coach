@@ -44,4 +44,9 @@ def evaluate(weights_path: str = "models/fchord_gnn.pt", data_dir: str = "data")
 
 
 if __name__ == "__main__":
-    evaluate()
+    import argparse
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--data_dir", default="data")
+    parser.add_argument("--weights_path", default="models/fchord_gnn.pt")
+    args = parser.parse_args()
+    evaluate(weights_path=args.weights_path, data_dir=args.data_dir)
