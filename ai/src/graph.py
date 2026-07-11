@@ -22,6 +22,11 @@ CONNECTIONS = [
     (5,9),(9,13),(13,17),
 ]
 
+_src = [a for a, b in CONNECTIONS] + [b for a, b in CONNECTIONS]
+_dst = [b for a, b in CONNECTIONS] + [a for a, b in CONNECTIONS]
+EDGE_INDEX = torch.tensor([_src, _dst], dtype=torch.long)  # [2, 46]
+
+
 def nodes_to_graph(nodes: list[list[float]], label: str | None = None) -> Data:
     """
     nodes : list of 21 × [x, y, z], MediaPipe normalized 0–1
@@ -29,11 +34,7 @@ def nodes_to_graph(nodes: list[list[float]], label: str | None = None) -> Data:
     """
     x = torch.tensor(nodes, dtype=torch.float)  # [21, 3]
 
-    src = [a for a, b in CONNECTIONS] + [b for a, b in CONNECTIONS]
-    dst = [b for a, b in CONNECTIONS] + [a for a, b in CONNECTIONS]
-    edge_index = torch.tensor([src, dst], dtype=torch.long)  # [2, 46]
-
-    data = Data(x=x, edge_index=edge_index)
+    data = Data(x=x, edge_index=EDGE_INDEX)
     if label is not None:
         data.y = torch.tensor([LABEL_MAP[label]], dtype=torch.long)
     return data
